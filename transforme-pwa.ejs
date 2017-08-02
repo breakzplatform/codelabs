@@ -1,0 +1,547 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>🎉Transforme seu site em um Progressive Web App 🐲</title>
+  <script src="https://codelabs.developers.google.com/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="https://codelabs.developers.google.com/elements/codelab.html">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+    }
+  </style>
+
+</head>
+
+<body unresolved class="fullbleed">
+
+  <google-codelab title="🎉 Transforme seu site em um Progressive Web App 🐲" environment="web" feedback-link="https://github.com/googlecodelabs/migrate-to-progressive-web-apps/issues">
+
+    <google-codelab-step label="Visão Geral" duration="1">
+
+      <p><a href="https://www.google.com/search?q=progressive+web+apps" target="_blank">Progressive Web Apps</a> are well and
+        good, but how do I get there from where I am now? Let&#39;s migrate an existing, desktop-only site to support amazing
+        new web features like install, push and offline. These features will make your sites more accessible and compelling
+        to your users on their increasingly mobile devices—and they&#39;ll also make your desktop users more engaged.</p>
+
+      <h3 class="checklist"><strong>O que você vai aprender</strong></h3>
+      <ul class="checklist">
+        <li>Como migrar um site existente para um PWA de maneira rápida</li>
+        <li>Como fornecer uma experiência mobile-friendly</li>
+        <li>Como criar um Manifesto para seu PWA</li>
+        <li>Como garantir que seus usuários engajados vejam os banners de instalação</li>
+        <li>Como enviar notificações via Push para seus usuários</li>
+        <li>Como Supporting static and dynamic content offline</li>
+      </ul>
+      <h3><strong>O que você vai precisar</strong></h3>
+      <ul>
+        <li>Chrome 52 ou superior</li>
+        <li>(opicional) um dispositivo Android rodando com Chrome 52 ou superior</li>
+        <li>Entendimento básico de <a href="http://git-scm.com/" target="_blank">git</a> e de como utilizar <a href="https://developer.chrome.com/devtools"
+            target="_blank">Chrome DevTools</a></li>
+        <li>O código de exemplo (que será fornecido nesse Codelab)</li>
+        <li>Um editor de texto de sua preferência (VSCode recomendado)</li>
+      </ul>
+      <p>Quando possível, esse codelab irá simplificar algumas explicações e caminhos para facilitar o entendimento. Essas explicações
+        podem ser vistas com mais profundidades em outros codelabs dedicados à mesma. Seguindo as etapas passo-a-passo no
+        código do website fornecido nesse codelab, você vai aprender como aplicar nos seus próprios sites.</p>
+      <h2>O início de tudo</h2>
+      <p>Você irá modificar um site chamado <strong>Dragotchi</strong>, onde você brinca com uma espécie de bichinho virtual
+        (em específico, um dragão amigável). Este site possui três páginas (Home, Dragotchi e FAQ). Duas páginas são estáticas,
+        mas a página Dragotchi faz algumas requisições Ajax simples à um servidor.</p>
+      <p>Esse site foi pensado apenas para navegadores desktop. Ele não possui desing responsivo, e também não tem uma cara
+        muito boa. Mas tudo bem! Nós estamos apenas àlguns passos para melhorar isso.</p>
+      <p><img style="max-width: 414.50px" src="img/2d0a26d3fd831a3e.png"></p>
+      <aside class="special">
+        <p>Você pode completar as etapas desse Codelab aos poucos, se quiser. Cada etapa irá ensinar a você algo novo para você
+          utilizar. E se você quiser parar em determinada parte e depois voltar para continuar, tudo bem. Os progressos são
+          independentes.
+        </p>
+      </aside>
+    </google-codelab-step>
+
+
+    <google-codelab-step label="Começando" duration="3">
+      <p>Vamos começar baixando o código-fonte do <strong>Dragotchi</strong> e configurar nosso ambiente de desenvolvimento.</p>
+      <h2>O que você precisa</h2>
+      <p>Clone o repositório do GitHub usando a seguinte linha de comando:</p>
+      <pre>$ git clone https://github.com/googlecodelabs/migrate-to-progressive-web-apps.git</pre>
+      <aside class="special">
+        <p>Esse comando irá criar uma pasta chamada <strong><em>migrate-to-progressive-web-apps</em></strong> que conterá todo
+          o código fonte de cada etapa deste Codelab, como se fosse nosso gabarito. Nós iremos utilizar a pasta <strong><em>work</em></strong>          para escrever o código aplicado para cada etapa.</p>
+      </aside>
+      <p>Uma vez que todo código estiver salvo localmente, você deve usar <a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en"
+          target="_blank">uma aplicação que crie um Servidor HTTP</a> (ou equivalente de linha de commando, usando por exemplo
+        Python) para levantar um servidor na pasta <strong><em>work</em></strong>, usando <a href="http://localhost:8887/"
+          target="_blank">a porta 8887</a>.</p>
+      <p>Vocâ agora pode abrir a url e brincar com o 🐲. Não se preocupe, o Codelab vai estar aqui quando você voltar.</p>
+
+      <h2>Visitando seu site num dispositivo móvel</h2>
+      <p>Se você tem um dispositivo Android conectnado, você pode (no seu Chrome desktop) visitar o endereço: <strong>chrome://inspect</strong>        (você vai precisar digitar ou copiar e colar esse endereço). Então, configure um redirecionamento de porta (usando
+        a mesma porta do seu servidor configurado anteriormente). Aí é só salvar.</p>
+      <p><img style="max-width: 183.50px" src="img/c8c4d97f348d4776.png"></p>
+
+      <p>Agora você está apto para acessar a versão básica do <strong>Dragotchi</strong> em <a href="http://localhost:8887/"
+          target="_blank">http://localhost:8887/</a> no seu dispositivo Android. Como já tinhamos discutido anteriormente,
+        a versão base não é otimizada para dispositivos móveis— nós iremos ver mais sobre isso no próximo passo.</p>
+      <aside class="special">
+        <p>Se você não tiver um Android em mãos, você pode ter um preview de como o site se comportaria num dispositivo móvel
+          usando o Chrome Dev Tools. Para abrir, aperte ⌘-⌥-J (ou Ctrl-Shift-i) e clique num pequeno ícone na barra de navegação
+          (que parece um tablet com um celular), ao lado de "Elementos".</p>
+      </aside>
+    </google-codelab-step>
+
+
+
+    <google-codelab-step label="Tags modernas no cabeçalho" duration="4">
+      <p>A primeira coisa que iremos fazer nesse site "retrô" é fazer com que ele fique mais amigável para dispositivos móveis,
+        além de incluir um arquivo que é o chamado "Web App Manifest". Esse arquivo descreve metadados sobre o site, como
+        por exemplo, o nome e o ícone com que ele vai aparecer na home screen do usuário.</p>
+
+      <p>O <strong>Dragotchi</strong> possui três páginas HTML. Como ele não utiliza nenhum framework nem templating system,
+        você vai precisar editar o conteúdo do &lt;head&gt; tanto no index.html, omo no faq.html e dragon.html</p>
+      <pre>&lt;head&gt;
+  &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, user-scalable=no&#34; /&gt;
+  &lt;link rel=&#34;manifest&#34; href=&#34;manifest.json&#34; /&gt;
+&lt;/head&gt;</pre>
+      <p>Se você estiver sem tempo, você pode adiciona-las apenas no index.html para este codelab. Porém tenha ciência que em
+        sites "reais" você precisa adicionar esse conteúdo em todas as páginas.</p>
+
+      <h2>O viewport</h2>
+      <p>A primeira linha é a tag <code>meta</code>, que especifica o viewport. Você pode saber mais sobre viewport acessando
+        <a href="https://developer.mozilla.org/pt-BR/docs/Mozilla/Mobile/Viewport_meta_tag" target="_blank">esse artigo no MDN</a>.
+        Mas por agora, se você atualizar o seu site (seja no seu Android, seja no Developer Tools) você irá perceber que
+        a página irá renderizar devidamente, sendo responsiva ao tamanho da tela do dispositivo.</p>
+
+      <h2>O Web App Manifest</h2>
+      <p>A segunda linha adiciona o <a href="https://www.google.com/search?q=web+app+manifest" target="_blank">Web App Manifest</a>,
+        que é necessário para controlar como seu site será adicionado à tela inicial do usuário. No código, você já fez a
+        referência ao arquivo, agora vamos cria-lo!</p>
+
+      <p>Abra seu editor de texto favorito. Nós iremos escrever um pouco de JSON. Vamos fazer algo mais ou menos assim-</p>
+
+      <pre>{
+  &#34;name&#34;: &#34;O melhor site de Dragões da Internet&#34;,
+  &#34;short_name&#34;: &#34;🐉🐉🐉&#34;,
+  &#34;display&#34;: &#34;minimal-ui&#34;,
+  &#34;start_url&#34;: &#34;/&#34;,
+  &#34;theme_color&#34;: &#34;#673ab6&#34;,
+  &#34;background_color&#34;: &#34;#111111&#34;,
+  &#34;icons&#34;: [
+    {
+      &#34;src&#34;: &#34;icon-192.png&#34;,
+      &#34;sizes&#34;: &#34;192x192&#34;,
+      &#34;type&#34;: &#34;image/png&#34;
+    }
+  ]
+}</pre>
+
+      <p>O campo <code>short_name</code> especifica extamente o que aparece na tela inicial do usuário. Tente manter esse campo
+        pequeno, preferencialmente uma palavra única (se a palavra tiver mais de 15 caracteres, ela pode ser abreviada).
+        No nosso caso, nós utilizamos os emojis de dragões pois, igual a qualquer outro caracter, eles são totalmente válidos!
+      </p>
+      <p>Algumas coisas que valem a pena ser relembradas-</p>
+      <ul>
+        <li>O Chrome e outros navegadores são particulamente detalhistas quanto a estrutura desse JSON. Tenha certeza que você
+          está usando sempre aspas duplas
+        </li>
+        <li>Normalmente, você deveria especificar mais ícones para tamanhos diferentes para cada tipo de tela. Não é raro de
+          um ícone enorme aparecer mal renderizado em telas menores.
+        </li>
+        <li>Existem outras propriedades que você pode adicionar, <a href="https://developer.mozilla.org/en-US/docs/Web/Manifest"
+            target="_blank">veja quais aqui</a></li>
+      </ul>
+      <p>Salve esse arquivo como <strong>manifest.json</strong>. Recarregue a página no seu Android, vá no menu do Chrome e
+        selecione a opção "Adicionar à Tela Inicial" Agora você deverá ver um amigável dragão na sua tela inicial!</p>
+      <p><img style="max-width: 138.38px" src="img/ab4143d0c41f1545.png"></p>
+      <p>Se você não tiver um dispostivo Android por perto, selecione a aba "Aplicação" dentro do painel do Chrome Developer
+        Tools. Então, elecione &#34;Manifesto&#34; para ver os detalhes do mesmo. Se você ver uma mensagem como &#34;Nenhum
+        manifesto detectado&#34;, verifique se o arquivo manifest.json que você criou foi salvo corretamente na pasta &#39;work&#39;.</p>
+      <h2>Eita! Funcionou tudo lindo!</h2>
+      <p>Sim, top demais.Agora vamos adicionar um Service Worker!</p>
+
+
+    </google-codelab-step>
+
+
+
+
+
+
+
+
+
+
+
+
+    <google-codelab-step label="Service Worker" duration="4">
+      <aside class="special">
+        <p>O código final dessa etapa está na pasta <strong><em>migrate-to-progressive-web-apps/step4-sw</em></strong>.</p>
+      </aside>
+      <p>Um <a href="https://www.google.com/search?q=service+worker" target="_blank">Service Worker</a> é um script que roda
+        em segundo plano no navegador. Ele é tão poderoso que ele consegue ser executado até quando sua página não está em
+        primeiro plano. Com ele, podemos prover aos usuários funcionalidades como suporte Offline e notificações Push.</p>
+      <p>Até um Service Worker vazio pode ajudar seu site. Como é que eu implemento essa belezura? Continue lendo.</p>
+      <h2>Adicionando o Service Worker</h2>
+      <p>Primeiramente, nós iremos escrever um pouco de JavaScript. Vamos copiar o mínimo de código em um novo arquivo-</p>
+      <pre>/** Um service worker que não faz nada! */
+self.addEventListener(&#39;fetch&#39;, function(event) {
+  /** Um listener que não faz nada! */
+});</pre>
+      <p>Salve isso como <strong>sw.js</strong>! É isso, está feito! Você criou o seu primeiro service worker! 🎆</p>
+
+      <h2>Registrando o seu Service Worker</h2>
+      <p>Bem, tem mais uma etapa. O código acima e o arquivo (sw.js) não estão sendo referenciados em lugar nenhum (os navegadores
+        atuais são ótimos, mas ainda não adivinham as coisas). Você vai precisar declara-lo no seu código para o navegador
+        reconhecer o seu service worker.</p>
+      <p>O <strong>Dragotchi</strong> já possui no seu código um script que executa em todas as páginas. Abra o arquivo site.js
+        e adicione o código a seguir-</p>
+      <pre>navigator.serviceWorker &amp;&amp; navigator.serviceWorker.register(&#39;./sw.js&#39;).then(function(registration) {
+  console.log(&#39;SW funcionando, registrado com o escopo: &#39;, registration.scope);
+});</pre>
+      <p>É isso! Esse código vai executar a cada carregamento de página. Se o service worker já estiver registrado seu navegador
+        vai ignorar a requisição de registro e depois de algum tempo, irá verificar se alguma coisa mudou.</p>
+      <p>Recarregue sua página e verifique em <code>chrome://serviceworker-internals/</code> se o Service Worker está de fato
+        carregado para o site. Vai parecer algo mais ou menos assim-</p>
+      <p><img style="max-width: 624.00px" src="img/55d50a8c457504e.png"></p>
+      <h2>Fantástico, o que eu posso fazer com isso?</h2>
+      <p>Primeiramente (e provavelmente, o mais top) é que seu site agora irá, sozinho, <em>perguntar</em> aos usuários se eles
+        desejam instalar seu PWA na tela inicial. Para saber mais como isso funciona, leia esse <a href="https://developers.google.com/web/updates/2015/03/increasing-engagement-with-app-install-banners-in-chrome-for-android?hl=en"
+          target="_blank">artigo do Google Developers</a> (em inglês).</p>
+      <p><img style="max-width: 137.50px" src="img/ecb9f92bf435c1a2.png"></p>
+      <p>Por fim, você pode expandir as capacidades do seu service worker para que ele possibilite o acesso offline na sua aplicação,
+        bem como permite com que seus usuários recebam notificações. Continue lendo para saber como isso funciona!</p>
+
+    </google-codelab-step>
+
+
+
+
+
+
+
+
+
+
+
+    <google-codelab-step label="Enviando notificações Push" duration="10">
+      <aside class="special">
+        <p>O código final dessa etapa está na pasta <strong><em>migrate-to-progressive-web-apps/step5-push</em></strong>, mas
+          ainda sim você irá precisar alterar a sua
+          <code>publicKey</code> dentro do arquivo &#34;site.js&#34; (durante essa etapa você irá aprender a conseguir uma
+          publicKey).</p>
+      </aside>
+
+
+      <p>Vamos enviar notificações! Nós não iremos desenvolver um servidor para enviar as mensagens, mas iremos deixar tudo
+        pronto na parte do front-end do site, assim iremos conseguir testar as notificações sem problemas.</p>
+
+      <p>Você vai precisar de duas chaves, uma chave pública e a outra privada. Acesse o site <a href="https://web-push-codelab.appspot.com/"
+          target="_blank">Push Companion</a>que ele vai gerar as chaves pra você, e vamos usa-las em breve. Mas atenção: você
+        precisa manter o site aberto para que as chaves permaneçam ativas.</p>
+
+      <aside class="warning">
+        <p><strong>Importante</strong>: Nunca inclua sua chave privada no seu HTML ou no código de um repositório público. Se
+          você deixar sua chave aberta, outras pessoas podem utiliza-la e comprometer o seu site.</p>
+      </aside>
+
+      <h2>Inscrevendo-se para receber pushs</h2>
+      <p>Dentro do código do seu site, você irá criar uma seção para que o usuário se inscreva para receber notificações. É
+        bem simples. Vamos adicionar o seguinte código no arquivo site.js-</p>
+      <pre>navigator.serviceWorker &amp;&amp; navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {  
+  serviceWorkerRegistration.pushManager.getSubscription()  
+    .then(function(subscription) {  
+      // subscription será null ou um objeto PushSubscription
+    });
+});</pre>
+
+      <p>Se <code>subscription</code> retornar <code>null</code>, então nós precisamos adicionar um bloco de código para que
+        o usuário tenha a possibilidade de fazer a inscrição-</p>
+
+      <pre>      if (subscription) {
+        console.info(&#39;O usuário já está inscrito&#39;, subscription);
+        window.subscription = subscription;
+        return
+      }
+
+      const applicationServerKey = urlB64ToUint8Array(publicKey);
+      serviceWorkerRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey,
+      })
+        .then(function(subscription) { 
+          console.info(&#39;Usuário acabou de se inscrever!&#39;, subscription);
+          window.subscription = subscription;
+        });</pre>
+
+      <p>Primeiramente, note que a <code>publicKey</code> não está definida em lugar nenhum. Crie ela no início do arquivo,
+        usando a chave que você obteve no site
+        <a href="https://web-push-codelab.appspot.com/" target="_blank">Push Companion</a> mais vedo-</p>
+      <pre>const publicKey = &#39;&lt;sua public key retirada do Push Companion&gt;&#39;;</pre>
+      <p>Você agora está apto para salvar seu arquivo e recarregar sua página - tanto no desktop como no Android, não importa
+        qual. Se você der uma olhada no seu Console dentro do Developer Tools, você irá ver uma mensagem com o objeto da
+        inscrição. Nele está continudo um campo &#34;endpoint&#34;. Nós iremos usar isso em breve, então deixe a janela aberta.</p>
+      <p><img style="max-width: 624.00px" src="img/d28fcbe6a6e1fa4.png"></p>
+      <p>Se voc&e ver um erro, certifique-se que sua <code>publicKey</code> está salva devidamente, ela parece uma string codificada
+        em base64.</p>
+      <aside class="warning">
+        <p><strong>Importante</strong>: para a demonstração (ou seja, no modo debug) se inscrever-se em notificações simplesmente
+          ao acessar a página é OK. Porém isso pode surpreender os seus usuários, e eles dirão que não pois não estão confortáveis
+          com essa situação—algumas pesquisas do Google mostram que a conversão de usuários é incrivelmente maior quando
+          existe uma ação envolvida, como por exemplo clicar num botão "Inscreva-se".</p>
+      </aside>
+
+
+
+      <h2>Exibindo a notificação</h2>
+      <p>É legal se inscrever para receber notificaçÕes, mas mais legal ainda é recebe-las. Mas, o que acontece? Como funciona?
+        O usuário nem sempre vai estar com o <strong>Dragotchi</strong> aberto... e é ai que o Service Worker entra. Se você
+        estiver bem lembrado, um service worker continua funcionando, mesmo que o site não esteja aberto.</p>
+      <p>Vamos abrir o arquivo sw.js ae adicionar essa seção-</p>
+      <pre>self.addEventListener(&#39;push&#39;, function(event) {
+  event.waitUntil(
+    self.registration.showNotification(&#39;Got Push?&#39;, {
+      body: &#39;Push Message received&#39;
+   }));
+});</pre>
+      <p>Essa é uma das mais simples notificações possíveis que podem ser exibidas, apenas com título e mensagem. Para mais
+        opções, dê uma olhada na <a href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/showNotification"
+          target="_blank">documentação</a>. Por agora, recarregue a página para que isso seja carregado no seu site.</p>
+
+
+      <h2>Misturando tudo</h2>
+      <p>Voltando ao Chrome Developer Tools no seu desktop. Nós iremos chamar uma função que irar gerar um comando para você
+        enviar uma notificação. Você irá precisar ter o &#34;curl&#34; instalado na sua máquina. Em sistemas Mac ou Linux,
+        o &#34;curl&#34; já está instalado por padrão.</p>
+      <p>Copie o código a seguir e cole ele no console dentro do Chrome Developer Tools-</p>
+      <pre>var privateKey = window.prompt(&#39;Insira sua privateKey&#39;);
+privateKey &amp;&amp; prepareAuthorization(publicKey, privateKey, subscription.endpoint, &#39;mailto:example@example.com&#39;).then(auth =&gt; {
+  const curl = `curl &#34;${subscription.endpoint}&#34; ` +
+      `-X POST ` +
+      `-H &#34;Authorization: ${auth}&#34; ` + 
+      `-H &#34;Crypto-Key: p256ecdsa=${publicKey}&#34; ` +
+      `-H &#34;TTL: 100&#34; ` +
+      `-H &#34;Content-Length: 0&#34;`;
+  console.warn(&#39;Copie e cole o conteúdo a seguir na linha de comando-&#39;);
+  console.dir(curl);
+});</pre>
+
+      <p>Ao executar o código acima, ele irá imediatamente perguntar sobre a sua privateKey que você obteve usando o <a href="https://web-push-codelab.appspot.com/"
+          target="_blank">Push Companion</a>. Cole a chave no campo e perte OK. Depois disso, o console irá exibir uma linha
+        de código enorme. Dê um duplo clique nela, copie-a, cole na linha de comando e execute.</p>
+
+      <aside class="warning">
+        <p><strong>Importante</strong>: O código que você acabou de executar usa o objeto subscription, que você normalmente
+          envia para o seu servidor para executar e preparar a requisição push. O exemplo aqui utilizado é apenas uma base
+          do que você precisa implementar no seu servidor para enviar as mensagens corretamente.
+      </aside>
+
+
+
+      <h2>E pronto!</h2>
+      <p>Você deve ver algo mais ou menos assim no seu desktop. Bom trabalho!</p>
+      <p><img style="max-width: 624.00px" src="img/e5cc4493bb3c5e8f.png"></p>
+      <p>Esse é o exemplo mais básico possível. O endpoint gerado pode (e deve) ser enviado para um servidor, num serviço que
+        pode executar as notificações a qualquer momento, até quando seu site não estiver disponivel.</p>
+
+
+    </google-codelab-step>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <google-codelab-step label="Acesso Offline" duration="5">
+      <aside class="special">
+        <p>O código final dessa etapa está na pasta <strong><em>migrate-to-progressive-web-apps/step6-cache </em></strong><em>(entretanto, ele não tem o bloco de código com notificações Push)</em>.</p>
+      </aside>
+
+      <p>Vamos criar um novo Service Worker para permitir que o <strong>Dragotchi</strong> seja acessado offline. Primeiramente,
+        vamos abrir o arquivo sw.js de novo. Nosso objetivo aqui é que controlar o <a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache"
+          target="_blank">cache do navegador</a>, então no nosso service worker fazemos o seguinte-</p>
+      <pre>self.addEventListener(&#39;install&#39;, function(e) {
+  e.waitUntil(
+    caches.open(&#39;the-magic-cache&#39;).then(function(cache) {
+    });
+  );
+});</pre>
+      <p>Agora, uma vez que nós estamos controlando isso, vamos atualizar o código para adicionar nosso site inteiro ao cache-</p>
+      <pre>self.addEventListener(&#39;install&#39;, function(e) {
+  e.waitUntil(
+    caches.open(&#39;the-magic-cache&#39;).then(function(cache) {
+      return cache.addAll([
+        &#39;/&#39;,
+        &#39;/index.html&#39;,
+        &#39;/dragon.html&#39;,
+        &#39;/faq.html&#39;,
+        &#39;/manifest.json&#39;,
+        &#39;/background.jpeg&#39;,
+        &#39;/construction.gif&#39;,
+        &#39;/dragon.png&#39;,
+        &#39;/logo.png&#39;,
+        &#39;/site.js&#39;,
+        &#39;/dragon.js&#39;,
+        &#39;/styles.css&#39;,
+      ]);
+    })
+  );
+});</pre>
+      <p>Essa lista é bem grande, mas é importante que seja. Se você usar algum processo de empacotamento/gerador para o seu
+        site, então é interessante que você adicione automaticamente todas as URLs possíveis que seu usuário possa acessar.</p>
+
+      <h2>Fazendo um "match" nas requisições</h2>
+
+      <p>Até agora tá tudo muito bom, tá tudo muito bem, mas realmente o que a gente quer é que quando o usuário acesse o nosso
+        site offline, ele continue funcionando. Até agora nós apenas listamos quais arquivos devem estar no cache, mas só
+        agora nós iremos escrever a parte do código em que nós entregamos esses arquivos para o usuário. Nós iremos subistituir
+        o listener &#39;fetch&#39; que está dentro do sw.js-</p>
+      <pre>self.addEventListener(&#39;fetch&#39;, function(event) {
+  event.respondWith(
+    caches.match(event.request).then(function(response) {
+      return response || fetch(event.request);
+    })
+  );
+});</pre>
+      <p>O objeto que representa o cache irá executar um "match" com sua requisição, retornando uma resposta válida ou <code>null</code>.
+        Se o valor for nulo, então nós entregamos [class]=" requisição para o método <a href="https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch"
+          target="_blank"><code>fetch</code></a> fazer a requisição normalmente.</p>
+      <p>Você pode escrever "matchs" mais complexos. Esses dois blocos de código representam um cache simples, você armazena
+        os objetos pela URL e acessa eles pela URL. Entretanto, não tem nada que impeça você de executar um JavaScript mais
+        robusto no seu service worker. Nós iremos ver um pouco sobre isso mais à frente.</p>
+
+      <h2>Testando</h2>
+      <p>Vá até o seu Android e desistale o <strong>Dragotchi</strong> da sua tela inicial. Então, abra ele no Chrome, recarregue
+        a página e depois adicione-o à sua tela inicial mais uma vez.</p>
+      <p>Se você desconectar seu Android do USB e apertar no ícone do <strong>Dragotchi</strong>, repare que ele continua carregando!
+        Você pode até recarregar a página, tudo continua a funcionar.</p>
+
+      <h2>Alguns detalhes importantes</h2>
+      <p>Esse tipo de cache cache vai armazenar seu site pra sempre!*</p>
+      <p>*ou até o armazenamento do usuário ficar cheio</p>
+
+      <p>Isso não é muito legal. Isso significa que a cada mudança que você fizer na sua página, você necessariamente precisa
+        limpar seu Service Worker para ver a alteração.</p>
+
+      <p>De agora em diante, no nosso projeto, acesse <a href="http://localhost:8887/clear.html" target="_blank">http://localhost:8887/clear.html</a>        e aperte o botão &#34;Clear&#34;. Essa página serve como um auxiliar para ajudar você a limpar o cache do service
+        worker que é executado em todo evento de "install".</p>
+
+      <p>Isso pode ser bem frustrante, pois precisa ser feito a cada mudança na página. Esse é o motivo que estamos fazendo
+        isso por último nesse codelab.</p>
+
+      <p>Se quiser dar uma olhada de uma maneira mais profunda, acesse o projeto <a href="https://workboxjs.org/" target="_blank">Workbox</a>,
+        que é uma coleção de bibliotecas que auxiliam você a desenvolver um Service Worker mais robusto.</p>
+
+      <aside class="warning">
+        <p><strong>Importante</strong>: Se você não tiver uma estratégia clara em relação ao cache, isso pode afetar seriamente
+          o desenvolvimento do seu site bem como os seus usuários. Pode acontecer de eles <strong>nunca</strong> acessarem
+          uma versão mais atual do seu website se algo não for planejado corretamente.</p>
+      </aside>
+
+      <p>A regra básica é: se o seu Service Worker mudar, quando uma página do seu site recarregar, ele será reinstalado. Durante
+        o desenvolvimento, você pode adicionar um simples comentário que contém a versão do seu Service Worker. Toda vez
+        que ela mudar, o evento de instalação irá ocorrer de novo, e ele irá fazer o cache novamente de todos os arquivos
+        que você possa ter mudado. Adicione esse comentário no topo do arquivo sw.js file-</p>
+      <pre>// version: Estou quase acabando o codelab!</pre>
+      <p>Você pode imaginar que ao invés de fazer isso manualmente, o versionamento deve ser feito usando algum processo automatizado
+        na construção do seu site.</p>
+
+      <h2>Tá quase</h2>
+      <p>Se você carregou o site mesmo com o USB desconectado e tentou cuidar do seu dragão, isso só funcionou por quê seu dispositivo
+        ainda está online. Nós cacheamos apenas as páginas que correspondem o nosso próprio site.</p>
+      <p>Se você tentar fazer isso com o modo avião, por exemplo, apesar das páginas locais funcionarem, você vai receber um
+        <code>alert</code> indicando a falha na conexão com o servidor externo. Vamos resolver isso.</p>
+      <p><img style="max-width: 383.14px" src="img/1fb35df293784c9c.png"></p>
+
+    </google-codelab-step>
+
+
+
+
+
+
+
+
+    <google-codelab-step label="Cache Imperativo" duration="4">
+      <aside class="special">
+        <p>O código final dessa etapa está na pasta <strong><em>migrate-to-progressive-web-apps/step7-imperative</em></strong><em>(entretanto, ele não tem o bloco de código com notificações Push)</em>.</p>
+      </aside>
+
+      <p>Como mencionamos anteriormente, tem muito mais coisas que você pode fazer usando o Cache disponível no Service Worker.
+        Vamos gerenciar agora um URL externo a nosso projeto. O status do seu dragão vem de um site externo, então nós podemos
+        interceptar a conexão.</p>
+      <p>Dentro do blogo fetch no sw.js, vamos buscar por requisições que venham especificamente de uma URL-</p>
+      <pre>self.addEventListener(&#39;fetch&#39;, function(event) {
+  if (event.request.url == &#39;https://dragon-server.appspot.com/&#39;) {
+    return;
+  }
+  /** código antigo */
+});</pre>
+      <p>Isso mostra que um Service Worker pode interceptar requisições em domínios externos ao seu próprio site. Agora, vamos
+        fazer alguma coisa com essa URL-</p>
+      <pre>  if (event.request.url == &#39;https://dragon-server.appspot.com/&#39;) {
+    console.info(&#39;respondendo a requisição ao dragon-server via Service Worker! 🤓&#39;);
+    event.respondWith(fetch(event.request).catch(function(e) {
+      let out = {Gold: 1, Size: -1, Actions: []};
+      return new Response(JSON.stringify(out));
+    }));
+    return;
+  }</pre>
+
+      <p>Isso irá retornar uma respsota válida, porém limitada, quando existe uma chamada a esse servidor externo quando o site
+        estiver offline (veja o bloco <code>catch</code> nessa <code>Promise</code>). Esse codelab tem a intenção de dar
+        uma introdução rápida, existem muitas mais alternativas para esse tipo de fallback. Você pode dar uma olhada em como
+        armazenar dados offline usando coisas como o <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API"
+          target="_blank">IndexedDB</a>.</p>
+
+      <p>A chave aqui é mostrar que é possivel você ter total controle de qualquer requisição que você fizer, em qualquer contexto.</p>
+
+      <h2>Testando</h2>
+      <p>Como comentamos anteriormente, a primeira coisa a se fazer é limpar o cache. Visite <a href="http://localhost:8887/clear.html"
+          target="_blank">http://localhost:8887/clear.html</a> para limpar. Então, remova o app da tela inicial e reinstale-o,
+        usando o mesmo processo de sempre.</p>
+
+      <p>Ative o modo avião e então abra o site pelo ícone, e navegue para a página do <strong>Dragotchi</strong>. Repare que
+        o estado padrão está com os valores que você definiu via o Service Worker!</p>
+      <p><img style="max-width: 320.50px" src="img/2d9ffaf6e7e4124f.png"></p>
+
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Está feito!" duration="1">
+      <h2>Parabéns</h2>
+      <p>Você aprendeu um monte sobre como deixar seu site um pouco mais progressivos, até aqueles sites que parecem estar presos
+        nos anos 90!</p>
+
+      <p>Agora, que tal acessar outros codelabs?</p>
+
+      <!--, be sure to try out many of the <a href="https://codelabs.developers.google.com/" target="_blank">other codelabs</a>,
+        which will go into more detail on all of these topics. Or read more on <a href="https://github.com/slightlyoff/ServiceWorker/blob/master/explainer.md"
+          target="_blank">Service Worker</a> and <a href="http://blog.chromium.org/2015/04/reaching-and-re-engaging-users-on.html"
+          target="_blank">Push Notifications</a>.</p-->
+
+      <p>original</p>
+      <p>ajude</p>
+
+      <p>🤘</p>
+
+
+    </google-codelab-step>
+
+  </google-codelab>
+
+</body>
+
+</html>

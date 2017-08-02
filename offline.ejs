@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Adicionar um Service Worker e Offline ao seu App da Web</title>
+  <script src="https://codelabs.developers.google.com/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="https://codelabs.developers.google.com/elements/codelab.html">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+    }
+  </style>
+
+</head>
+
+<body unresolved class="fullbleed">
+
+  <google-codelab title="Adicionar um Service Worker e Offline ao seu App da Web" environment="web" feedback-link="https://github.com/googlesamples/io2015-codelabs/issues">
+
+    <google-codelab-step label="Visão Geral" duration="1">
+      <p><img style="max-width: 668.87px" src="img/9246b0abd8d860da.png"></p>
+      <p>Neste codelab, você aprenderá a integrar um service worker a um aplicativo existente para que o aplicativo funcione
+        off-line. O aplicativo se chama <a href="https://airhorner.com">Air Horner</a>. Clique na buzina e ela faz um som.</p>
+      <h4 id="o_que_voce_aprendera">O que você aprenderá</h4>
+      <ul>
+        <li>Como adicionar um service worker básico a um projeto existente</li>
+        <li>Como simular o modo off-line e inspecionar e depurar um service worker com Chrome DevTools.</li>
+        <li>Uma estratégia simples para o armazenamento em cache off-line.</li>
+      </ul>
+      <h4 id="o_que_sera_necessario">O que será necessário</h4>
+      <ul>
+        <li>Chrome 52 ou superior.</li>
+        <li>Conhecimentos básicos sobre <a href="https://developers.google.com/web/fundamentals/getting-started/primers/promises">Promises</a>,
+          Git e Chrome DevTools.</li>
+        <li>O exemplo de código.</li>
+        <li>Um editor de texto.</li>
+        <li>Um servidor da Web local. Se deseja usar o servidor de Web descrito neste codelab, você precisa do Python instalado
+          em sua linha de comando.</li>
+      </ul>
+
+      <ins class="adsbygoogle"
+          style="display:block; text-align:center;"
+          data-ad-format="fluid"
+          data-ad-layout="in-article"
+          data-ad-client="ca-pub-4126088357586711"
+          data-ad-slot="6371694599"></ins>
+    </google-codelab-step>
+
+    <google-codelab-step label="Obtenha o exemplo de código" duration="1">
+      <p>Clone o repositório do GitHub pela linha de comando sobre SSH:</p>
+      <pre class="prettyprint notranslate" translate="no"><code>$ git clone git@github.com:GoogleChrome/airhorn.git
+</code></pre>
+      <p>Ou HTTPS:</p>
+      <pre class="prettyprint notranslate" translate="no"><code>$ git clone https://github.com/GoogleChrome/airhorn.git
+</code></pre>
+
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Execute o exemplo de aplicativo" duration="2">
+      <p>Primeiro, vejamos qual a aparência do aplicativo de exemplo acabado (dica: é incrível). </p>
+      <p>Certifique-se de que você esteja na ramificação correta (final), verificando a ramificação <code>master</code>.</p>
+      <pre class="prettyprint notranslate" translate="no"><code>$ git checkout master
+</code></pre>
+      <p>Execute o site a partir de um servidor de Web local. Você pode usar qualquer servidor de Web, mas pelo resto deste
+        codelab vamos supor que esteja usando <code>SimpleHTTPServer</code> do Python na porta 3000, portanto o aplicativo
+        estará disponível em <code>localhost:3000</code>.</p>
+      <pre class="prettyprint notranslate" translate="no"><code>$ cd app
+$ python -m SimpleHTTPServer 3000
+</code></pre>
+      <p>Abra o site no Chrome. Você deve ver: <img alt="9246b0abd8d860da.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/9246b0abd8d860da.png"
+        /></p>
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Teste o aplicativo" duration="1">
+      <p>Clique na buzina. Ela deve fazer um som.</p>
+      <p>Agora, você vai simular ficar off-line usando Chrome DevTools.</p>
+      <p>Abra o DevTools, vá ao painel <strong>Application</strong>, e ative a caixa de seleção <strong>Offline</strong>. Na
+        imagem abaixo, o cursor está parado sobre a caixa de seleção. </p>
+      <p><img alt="479219dc5f6ea4eb.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/479219dc5f6ea4eb.png"
+        /></p>
+      <p>Após clicar na caixa de seleção, observe o ícone de aviso (triângulo amarelo com ponto de exclamação) ao lado da guia
+        <strong>Network</strong> do painel. Isto indica que você está off-line. </p>
+      <p>Para provar que você está off-line, vá para <a href="https://google.com">https://google.com</a>. Você deve ver a mensagem
+        de erro "não há conexão com a Internet" do Chrome. </p>
+      <p>Agora, volte para o seu aplicativo. Embora esteja off-line, a página ainda deve atualizar totalmente. Você ainda deve
+        conseguir usar a buzina.</p>
+      <p>O motivo para ele funcionar off-line é a base deste codelab: suporte off-line com o service worker.</p>
+    </google-codelab-step>
+
+    <google-codelab-step label="Compile o aplicativo inicial" duration="2">
+      <p>Agora você vai remover todo o suporte off-line do aplicativo e vai aprender como usar um service worker para adicionar
+        o suporte off-line de volta ao aplicativo</p>
+      <p>Confira a versão "quebrada" do aplicativo que não tem o service worker implementado.</p>
+      <pre class="prettyprint notranslate" translate="no"><code>$ git checkout code-lab</code></pre>
+      <p>Volte ao painel <strong>Application</strong> do DevTools e desative a caixa de seleção <strong>Offline</strong>, para
+        voltar a ficar online.</p>
+      <p>Execute a página. O aplicativo deve funcionar da forma esperada.</p>
+      <p>Agora, use DevTools para simular o modo off-line novamente (ativando a caixa de seleção <strong>Offline</strong> no
+        painel <strong>Application</strong>). <strong>Atenção!</strong> Se não sabe muito sobre service workers, você está
+        prestes a ver um comportamento inesperado.</p>
+      <p>O que você espera ver? Bem, como está off-line e esta versão do aplicativo não tem service worker, seria de esperar
+        ver a mensagem de erro "não há conexão com a Internet" típica do Chrome.</p>
+      <p>Mas o que você realmente vê é ... um aplicativo off-line totalmente funcional!</p>
+      <p><img alt="9246b0abd8d860da.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/9246b0abd8d860da.png"
+        /></p>
+      <p>O que aconteceu? Bem, lembre-se de que ao começar este codelab, você experimentou a versão concluída do aplicativo.
+        Quando aquela versão foi executada, o aplicativo realmente instalou um service worker. Esse service worker agora
+        está sendo executado automaticamente toda vez que você executa o aplicativo. Uma vez que um service worker é instalado
+        para um escopo, como <code>localhost:3000</code> (você vai aprender mais sobre escopo na próxima seção), esse service
+        worker é iniciado automaticamente toda vez que se acessa o escopo, a menos que você o exclua programática ou manualmente.
+      </p>
+      <p>Para corrigir isso, vá para o painel <strong>Application</strong> do DevTools, clique na guia <strong>Service Workers</strong>        e, em seguida, clique no botão <strong>Unregister</strong>. Na imagem abaixo, o cursor está parado sobre o botão.
+      </p>
+      <p><img alt="837b46360756810a.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/837b46360756810a.png"
+        /></p>
+      <p>Agora, antes de atualizar o site, certifique-se de que você ainda está usando DevTools para simular o modo off-line.
+        Atualize a página, e ela deve exibir a mensagem de erro "não há conexão com a Internet", como esperado.</p>
+      <p><img alt="da11a350ed38ad2e.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/da11a350ed38ad2e.png"
+        /></p>
+    </google-codelab-step>
+
+    <google-codelab-step label="Registre um service worker no site" duration="3">
+
+      <p>Agora é hora de adicionar suporte off-line de volta ao aplicativo. Isso consiste em dois passos:</p>
+      <ol>
+        <li>Crie um arquivo JavaScript que será o service worker.</li>
+        <li>Instrua o navegador a registrar o arquivo JavaScript como o "service worker".</li>
+      </ol>
+      <p>Primeiro, crie um arquivo vazio chamado <code>sw.js</code> e coloque-o na pasta <code>/app</code>. </p>
+      <p>Agora, abra <code>index.html</code> e adicione o código a seguir na parte inferior de <code>&lt;body&gt;</code>.</p>
+      <pre class="prettyprint"><code>&lt;script&gt;
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker
+           .register('/sw.js')
+           .then(function() { console.log(&quot;Service Worker Registered&quot;); });
+}
+&lt;/script&gt;
+</code></pre>
+
+      <p>O script verifica se o navegador suporta service workers. Se suportar, ele registra o nosso arquivo <code>sw.js</code>        atualmente em branco como o service worker, e, em seguida, registra para o console.</p>
+      <p>Antes de executar seu site novamente, volte para DevTools e olhe a guia <strong>Service Workers</strong> do painel
+        <strong>Application</strong>. Ela deve ser atualmente vazia, o que significa que o site não tem service workers instalados.
+      </p>
+      <p><img alt="37d374c4b51d273.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/37d374c4b51d273.png"
+        /></p>
+      <p>Certifique-se de que a caixa de seleção <strong>Offline</strong> no DevTools esteja desativada. Atualize sua página
+        novamente. Como a página é carregada, você pode ver que um service worker está registrado.</p>
+      <p><img alt="b9af9805d4535bd3.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/b9af9805d4535bd3.png"
+        /></p>
+      <p>Ao lado do rótulo <strong>Source</strong>, você pode ver um link para o código-fonte do service worker registrado.
+      </p>
+      <p><img alt="3519a5068bc773ea.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/3519a5068bc773ea.png"
+        /></p>
+      <p>Se quiser inspecionar o service worker atualmente instalado para uma página, clique no link. Isso vai exibir o código-fonte
+        do service worker no painel <strong>Sources</strong> do DevTools. Por exemplo, clique no link agora, e você deve
+        ver um arquivo vazio. </p>
+      <p><img alt="dbc14cbb8ca35312.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/dbc14cbb8ca35312.png"
+        /></p>
+
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Instale os ativos do site" duration="2">
+      <p>Com o service worker registrado, na primeira vez que um usuário acessar a página, um evento <code>install</code> é
+        acionado. Este evento é o local onde você deseja armazenar em cache os ativos da sua página.</p>
+      <p>Adicione o código a seguir ao sw.js.</p>
+      <pre class="prettyprint"><code>importScripts('/cache-polyfill.js');
+
+self.addEventListener('install', function(e) {
+ e.waitUntil(
+   caches.open('airhorner').then(function(cache) {
+     return cache.addAll([
+       '/',
+       '/index.html',
+       '/index.html?homescreen=1',
+       '/?homescreen=1',
+       '/styles/main.css',
+       '/scripts/main.min.js',
+       '/sounds/airhorn.mp3'
+     ]);
+   })
+ );
+});
+</code></pre>
+
+      <p>A primeira linha adiciona o Cache polyfill. Este polyfill já está incluído no repositório. Precisamos usar o polyfill
+        porque a API Cache ainda não é totalmente suportada em todos os navegadores. Em seguida, vem o ouvinte de evento
+        <code>install</code>. O ouvinte de evento <code>install</code> abre o objeto <code>caches</code> e, em seguida, o
+        preenche com a lista de recursos que queremos armazenar em cache. Uma coisa importante sobre a operação <code>addAll</code>        é que ela é tudo ou nada. Se um dos arquivos não estiver presente ou não for buscado, toda a operação <code>addAll</code>        falha. Um bom aplicativo cuidará desse cenário.</p>
+      <p>O próximo passo é programar nosso service worker para retornar a interceptação das solicitações de qualquer um desses
+        recursos e usar o objeto <code>caches</code> para retornar a versão armazenada localmente de cada recurso.</p>
+
+
+    </google-codelab-step>
+
+    <google-codelab-step label="Intercepte as solicitações da página da Web" duration="10">
+      <p>Um recurso poderoso dos service workers é que, uma vez que um service worker controla uma página, ele pode interceptar
+        todas as solicitações que a página faz e decidir o que fazer com a solicitação. Nesta seção você vai programar o
+        service worker para interceptar solicitações e retornar as versões em cache de ativos, em vez de ir para a rede para
+        recuperá-los.</p>
+      <p>A primeira etapa é anexar um gerenciador de eventos ao evento <code>fetch</code>. Esse evento é acionado para todas
+        as solicitações realizadas.</p>
+      <p>Adicione o código a seguir ao à parte inferior do seu <code>sw.js</code> para registrar as solicitações feitas a partir
+        da página principal.</p>
+      <p>Vamos testar isso. <strong>Atenção!</strong> Você está prestes a ver mais algum comportamento inesperado do service
+        worker. </p>
+      <p>Abra DevTools e vá para o painel <strong>Application</strong>. A caixa de seleção <strong>Offline</strong> deve estar
+        desativada. Pressione a tecla <code>Esc</code> para abrir a gaveta <strong>Console</strong> na parte inferior da
+        sua janela DevTools. Sua janela DevTools deve ser semelhante à imagem a seguir:</p>
+      <p><img alt="c96de824be6852d7.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/c96de824be6852d7.png"
+        /></p>
+      <p>Atualize sua página agora e veja a janela de DevTools novamente. Para começar, esperamos ver várias solicitações registradas
+        no Console, mas isso não está acontecendo. Em segundo lugar, no painel <strong>Service Worker</strong> podemos ver
+        que o <strong>Status</strong> mudou:</p>
+      <p><img alt="c7cfb6099e79d5aa.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/c7cfb6099e79d5aa.png"
+        /></p>
+      <p>No <strong>Status</strong> há um novo service worker esperando para ativar. Este deve ser o novo service worker que
+        inclui as alterações que acabamos de fazer. Então, por algum motivo, o antigo service worker que instalamos (que
+        era apenas um arquivo em branco) ainda está controlando a página. Se clicar no link <code>sw.js</code> ao lado de
+        <strong>Source</strong> você pode verificar que o antigo service worker ainda está em execução. </p>
+      <p>Para corrigir esse inconveniente, ative a caixa de seleção <strong>Update on reload</strong>.</p>
+      <p><img alt="26f2ae9a805bc69b.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/26f2ae9a805bc69b.png"
+        /></p>
+      <p>Quando esta caixa de seleção está ativada, DevTools sempre atualiza o service worker a cada atualização da página.
+        Isso é muito útil ao se desenvolver um service worker ativamente.</p>
+      <p>Atualize a página agora e você pode ver que um novo service worker está instalado e que os URLs de solicitação estão
+        sendo registrados no Console, como esperado.</p>
+      <p><img alt="53c23650b131143a.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/offline/img/53c23650b131143a.png"
+        /></p>
+      <p>Agora você precisa decidir o que fazer com todas essas solicitações. Por padrão, se você não fizer nada, a solicitação
+        é transmitida para a rede e a resposta é retornada para a página da Web.</p>
+      <p>Para que seu aplicativo funcione off-line, você precisa coletar a solicitação do cache se ela estiver disponível.</p>
+      <p>Atualize seu ouvinte de evento de busca para coincidir com o código abaixo.</p>
+      <p>O método <code>event.respondWith()</code> informa ao navegador para avaliar o resultado do evento no futuro. <code>caches.match(event.request)</code>        leva a atual solicitação da web que ativou o evento de busca e procura no cache por um recurso que corresponda. A
+        correspondência é realizada verificando a string do URL. O método <code>match</code> retorna uma promessa que resolve,
+        mesmo se o arquivo não for encontrado no cache. Isso significa que você tem uma escolha sobre o que fazer. Em nosso
+        caso simples, quando o arquivo não é encontrado, você deve <code>fetch</code> o mesmo da rede e retorná-lo ao navegador.</p>
+      <p>Este é o caso mais simples; existem muitos outros cenários de armazenamento em cache. Por exemplo, é possível armazenar
+        em cache de forma incremental todas as respostas de solicitações que anteriormente não estavam armazenadas para que,
+        no futuro, todas sejam retornadas do cache. </p>
+    </google-codelab-step>
+
+    <google-codelab-step label="Parabéns!" duration="1">
+      <p>Agora você tem suporte off-line. Atualize a página enquanto ainda está online para atualizar o service worker para
+        a última versão, e depois use DevTools para entrar em modo off-line. Atualizar a página novamente, e você deve ter
+        uma buzina de ar off-line totalmente funcional!</p>
+      <h4 id="topicos_abordados">Tópicos abordados</h4>
+      <ul>
+        <li>Como adicionar um service worker básico a um projeto existente</li>
+        <li>Como usar Chrome DevTools para simular o modo off-line e para inspecionar e depurar service workers.</li>
+        <li>Uma estratégia simples para o armazenamento em cache off-line.</li>
+      </ul>
+      <h4 id="proximas_etapas">Próximas etapas</h4>
+      <ul>
+        <li>Saiba como adicionar facilmente <a href="https://codelabs.developers.google.com/codelabs/sw-precache/index.html?index=..%2F..%2Findex#0">suporte off-line com elementos Polymer off-line</a>          robusto</li>
+        <li>Explore mais <a href="https://jakearchibald.com/2014/offline-cookbook/">técnicas avançadas de armazenamento em cache</a></li>
+      </ul>
+      <h4 id="saiba_mais">Saiba mais</h4>
+      <ul>
+        <li><a href="https://developers.google.com/web/fundamentals/primers/service-worker/?hl=en">Introdução ao service worker</a></li>
+      </ul>
+    </google-codelab-step>
+
+  </google-codelab>
+
+  
+          
+      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+
+
+</body>
+
+</html>
