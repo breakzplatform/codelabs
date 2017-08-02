@@ -1,0 +1,404 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Depurando Service Workers</title>
+  <script src="https://codelabs.developers.google.com/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="https://codelabs.developers.google.com/elements/codelab.html">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+    }
+  </style>
+
+</head>
+
+<body unresolved class="fullbleed">
+
+  <google-codelab title="Depurando Service Workers"
+                  environment="web"
+                  feedback-link="https://github.com/googlecodelabs/debugging-service-workers/issues">
+    
+      <google-codelab-step label="Introdução" duration="0">
+       <p>Service workers dão aos desenvolvedores a incrível capacidade de lidar com redes instáveis e criar apps da Web que verdadeiramente priorizam o modo off-line. Porém, ser uma tecnologia nova significa que às vezes pode ser difícil de depurar, especialmente enquanto esperamos que as nossas ferramentas se tornem compatíveis.</p>
+<p>Este codelab orientará você na criação de um Service Worker básico e demonstrar como usar o novo painel Application no Chrome DevTools para depurar e inspecionar seu worker.</p>
+<h3 id="o_que_vamos_criar">O que vamos criar?</h3>
+<p><img alt="6ffdd0864a80600.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/6ffdd0864a80600.png" /></p>
+<p>Neste codelab você vai trabalhar com um Progressive Web App extremamente simples e aprender técnicas que pode empregar em seus próprios aplicativos quando encontrar problemas.</p>
+<p>Como este codelab é focado em ensinar ferramentas, fique à vontade para interromper em vários pontos experimentar. Brinque com o código, atualize a página, abra novas guias etc. A melhor maneira de aprender ferramentas de depuração é simplesmente quebrar as coisas e sujar as mãos corrigindo-as.</p>
+<h3 id="o_que_voce_aprendera">O que você aprenderá</h3>
+<ul>
+<li>Como inspecionar um Service Worker com o painel Application</li>
+<li>Como explorar o Cache e IndexedDB</li>
+<li>Como simular diferentes condições de rede</li>
+<li>Como usar declarações do depurador e pontos de interrupção para depurar um Service Worker</li>
+<li>Como simular eventos Push</li>
+</ul>
+<h3 id="o_que_sera_necessario">O que será necessário</h3>
+<ul>
+<li>Chrome 52 ou superior</li>
+<li>Instale <a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">Web Server for Chrome</a>, ou use seu servidor de Web preferido.</li>
+<li>O exemplo de código</li>
+<li>Um editor de texto</li>
+<li>Conhecimentos básicos sobre HTML, CSS e JavaScript</li>
+</ul>
+<p>Este codelab se concentra na depuração de Service Workers e assume alguns conhecimentos prévio de trabalho com Service Workers. Alguns conceitos são apenas pincelados ou blocos de código (como estilos ou JavaScript não relevante) são fornecidos para que você os copie e cole. Se você é novo em Service Workers, certifique-se de <a href="https://developers.google.com/web/fundamentals/primers/service-worker/">ler o API Primer</a> antes de continuar.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configuração" duration="0">
+        
+<h3 id="faca_o_download_do_codigo">Faça o download do código</h3>
+<p>Você pode baixar todo o código para este codelab, clicando no botão a seguir:</p>
+<p><a href="https://github.com/googlecodelabs/debugging-service-workers/archive/master.zip">Link</a></p>
+<p>Descompacte o arquivo zip baixado. Isso irá descompactar uma pasta raiz (<code>debugging-service-workers-master</code>), que contém uma pasta para cada etapa deste codelab, juntamente com todos os recursos que você vai precisar.</p>
+<p>As pastas <code>step-NN</code> contêm o estado final desejado de cada etapa deste codelab. Elas servem como referência. Faremos todo nosso trabalho de codificação em um diretório chamado <code>work</code>.</p>
+<h3 id="instale_e_verifique_o_servidor_de_web">Instale e verifique o servidor de Web</h3>
+<p>Embora você seja livre para usar seu próprio servidor de Web, este codelab é projetado para funcionar bem com o Chrome Web Server. Se ainda não tem esse aplicativo instalado, você pode instalá-lo pela Chrome Web Store.</p>
+<p><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb">Link</a></p>
+<p>Após instalar o aplicativo Web Server for Chrome, clique no atalho Apps na barra de favoritos: </p>
+<p><img alt="9efdf0d1258b78e4.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/9efdf0d1258b78e4.png" /></p>
+<p>Na janela seguinte, clique no ícone do Web Server: </p>
+<p><img alt="dc07bbc9fcfe7c5b.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/dc07bbc9fcfe7c5b.png" /></p>
+<p>Você verá esta caixa de diálogo, que lhe permite configurar seu servidor de Web local:</p>
+<p><img alt="433870360ad308d4.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/433870360ad308d4.png" /></p>
+<p>Clique no botão <strong>choose folder</strong> e selecione a pasta <code>work</code>. Isto permitirá servir o seu trabalho em andamento pelo URL em destaque na caixa de diálogo do servidor de Web (na seção <strong>Web Server URL(s)</strong>).</p>
+<p>Em Options, marque a caixa ao lado de "Automatically show index.html", como mostrado abaixo:</p>
+<p><img alt="8937a38abc57e3.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/8937a38abc57e3.png" /></p>
+<p>Em seguida, interrompa e reinicie o servidor, deslizando o botão de alternância marcado como "Web Server: STARTED" para a esquerda e de volta para a direita.</p>
+<p><img alt="daefd30e8a290df5.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/daefd30e8a290df5.png" /></p>
+<p>Agora, acesse seu site de trabalho no navegador da Web (clicando no URL Web Server em destaque) e você deve ver uma página com a seguinte aparência:</p>
+<p><img alt="693305d127d9fe80.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/693305d127d9fe80.png" /></p>
+<p>Obviamente, este aplicativo ainda não está fazendo nada interessante. Adicionaremos funcionalidade e recursos de IU em etapas posteriores. </p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Introdução à aba Application" duration="0">
+        <h3 id="inspecione_o_manifesto">Inspecione o Manifesto</h3>
+<p>Construir um Progressive Web App requer juntar várias tecnologias essenciais diferentes, inclusive Service Workers e Manifestos de Aplicativos Web, bem como as tecnologias facilitadoras úteis, como a API de Armazenamento de Cache, IndexedDB e Notificações Push. Para facilitar que os desenvolvedores obtenham uma visão coordenada de cada uma dessas tecnologias o Chrome DevTools incorporou inspetores para cada um no novo painel Application.</p>
+<ul>
+<li>Abra o Chrome DevTools e clique na aba que diz <strong>Application</strong>.</li>
+</ul>
+<p><img alt="b380532368b4f56c.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/b380532368b4f56c.png" /></p>
+<p>Olhe na barra lateral e observe que <strong>Manifest</strong> está destacado no momento. Esta visualização mostra informações importantes relacionadas com o arquivo <code>manifest.json</code>, como o nome do aplicativo, URL de início, ícones etc.</p>
+<p>Embora este codelab não trate disso, observe que há um botão <strong>Add to homescreen</strong> que pode ser usado para simular a experiência de adicionar o aplicativo à tela inicial do usuário.</p>
+<p><img alt="56508495a6cb6d8d.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/56508495a6cb6d8d.png" /></p>
+<h3 id="inspecione_os_service_workers">Inspecione os Service Workers</h3>
+<p>No passado, inspecionar um Service Worker exigia bisbilhotar o Chrome internamente e definitivamente não era a melhor experiência de usuário. Tudo isso muda com a nova guia <strong>Application</strong>.</p>
+<ul>
+<li>Clique no item de menu <strong>Service Workers</strong> abaixo do item <strong>Manifest</strong> selecionado no momento</li>
+</ul>
+<p><img alt="3dea544e6b44979d.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/3dea544e6b44979d.png" /></p>
+<p>A visualização <strong>Service Workers</strong> fornece informações sobre Service Workers que estão ativos na origem atual. Ao longo da linha superior, há uma série de caixas de seleção.</p>
+<ul>
+<li><strong>Offline</strong>- Simula ser desconectado da rede. Isso pode ser útil para verificar rapidamente que os gerenciadores de busca do seu Service Worker estão funcionando corretamente.</li>
+<li><strong>Update on reload</strong> - Força o Service Worker atual a ser substituído por um novo Service Worker (se o desenvolvedor tiver feito alterações em seu <code>service-worker.js</code>). Normalmente, o navegador esperar até que um usuário feche todas as guias que contêm o site atual antes de atualizar para um novo Service Worker.</li>
+<li><strong>Bypass for network</strong> - Força o navegador a ignorar qualquer Service Worker ativo e buscar recursos da rede. Isso é extremamente útil para situações em que você deseja trabalhar em CSS ou JavaScript e não precisa se preocupar que Service Worker armazene em cache acidentalmente e retorne arquivos antigos.</li>
+<li><strong>Show all</strong> - Mostra uma lista de todos os Service Workers ativos, independentemente da origem.</li>
+</ul>
+<p>Abaixo disso você verá informações relacionadas com o Service Worker ativo atual (se houver). Um dos campos mais úteis é o campo <strong>Status</strong>, que mostra o estado atual do Service Worker. Como esta é a primeira vez que o aplicativo é iniciado, o Service Worker atual foi instalado com êxito e ativado, portanto ele exibe um círculo verde para indicar que tudo está bem.</p>
+<p>Observe o número de código ao lado do indicador de status verde. Esse é o código para o Service Worker ativo no momento. Lembre-se dele ou anote-o, pois o usaremos para uma comparação em um momento.</p>
+<ul>
+<li>Em seu editor de texto, abra o arquivo <code>service-worker.js</code></li>
+</ul>
+<p>O código para o Service Worker atual é bastante simples, apenas alguns de registros do console.</p>
+<pre class="prettyprint notranslate" translate="no"><code>self.addEventListener('install', function(event) {
+  console.log('Service Worker installing.');
+});
+
+self.addEventListener('activate', function(event) {
+  console.log('Service Worker activating.');  
+});
+</code></pre>
+<p>Se voltar para DevTools e olhar no Console, você pode ver que ambos os registros saíram com êxito.</p>
+<p><img alt="5fcfd389f5357c09.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/5fcfd389f5357c09.png" /></p>
+<p>Vamos atualizar o código para o <code>service-worker.js</code>, para vê-lo passar por uma mudança de ciclo de vida.</p>
+<ul>
+<li>
+<p>Atualize os comentários em <code>service-worker.js</code> para que eles contenham novas mensagens</p>
+<p>self.addEventListener('install', function(event) {
+  console.log('A <em>new</em> Service Worker is installing.');
+});</p>
+<p>self.addEventListener('activate', function(event) {
+  console.log('Finally active. Ready to start serving content!');<br />
+});</p>
+</li>
+<li>
+<p>Atualize a página e abra o console em DevTools</p>
+</li>
+</ul>
+
+
+<h2 id="configuracao">Configuração</h2>
+<p>O console registra <code>A *new* Service Worker is installing.</code>, mas não mostra a 2ª mensagem sobre o novo Service Worker estar ativo.</p>
+<ul>
+<li>Alterne para a guia Application no DevTools</li>
+</ul>
+<p>Na guia Application, agora há dois indicadores de status, cada um representando o estado de nossos dois Service Workers.</p>
+<p><img alt="2e41dbf21437944c.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/2e41dbf21437944c.png" /></p>
+<p>Observe o código do primeiro Service Worker. Ele deve corresponder o código do Service Worker original. Quando você instala um novo Service Worker, o worker anterior permanece ativo até a próxima vez que o usuário visitar a página.</p>
+<p>O segundo indicador de status mostra o novo Service Worker que acabamos de editar. Agora ele está em um estado de espera.</p>
+<p>Uma maneira fácil de forçar o novo Service Worker a se ativar é com o botão <strong>skipWaiting</strong>.</p>
+<p><img alt="7a60e9ceb2db0ad2.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/7a60e9ceb2db0ad2.png" /></p>
+<ul>
+<li>Clique no botão skipWaiting e depois alterne para o Console</li>
+</ul>
+<p>Observe que o console agora registra a mensagem do gerenciador de eventos <code>activate</code></p>
+<p><code>Finally active. Ready to start serving content!</code></p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Explore o cache" duration="0">
+        <p>Gerir o seu próprio cache de arquivos off-line com um Service Worker é um superpoder incrível. O novo painel <strong>Application</strong> tem uma série de ferramentas úteis para explorar e modificar seus recursos armazenados, o que pode ser muito útil durante o desenvolvimento.</p>
+<h3 id="adicionar_armazenamento_em_cache_ao_seu_service_worker">Adicionar armazenamento em cache ao seu Service Worker</h3>
+<p>Antes de poder inspecionar o cache, você precisa escrever um pouco de código para armazenar alguns arquivos. Pré-armazenar arquivos em cache durante a fase de instalação do Service Worker é uma técnica útil para garantir que recursos cruciais estejam disponíveis para o usuário, se ele ficar off-line. Vamos começar por aí.</p>
+<ul>
+<li>Antes de atualizar o <code>service-worker.js</code>, abra o painel <strong>Application</strong> no DevTools, navegue até o menu <strong>Service Workers</strong>, e marque a caixa que diz <strong>Update on Reload</strong></li>
+</ul>
+<p><img alt="d4bcfb0983246797.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/d4bcfb0983246797.png" /></p>
+<p>Este truque útil forçará a página a usar o Service Worker que for o mais recente, então você não tem que clicar na opção <strong>skipWaiting</strong> toda vez que quiser fazer alterações em seu Service Worker.</p>
+<ul>
+<li>Em seguida, atualize o código em <code>service-worker.js</code> para que fique assim</li>
+</ul>
+<pre class="prettyprint"><code>var CACHE_NAME = 'my-site-cache-v1';
+var urlsToCache = [
+  '/',
+  '/styles/main.css',
+  '/scripts/main.js',
+  '/images/smiley.svg'
+];
+
+self.addEventListener('install', function(event) {
+  // Perform install steps
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        return cache.addAll(urlsToCache);
+      })
+  );  
+});
+
+self.addEventListener('activate', function(event) {
+  console.log('Finally active. Ready to start serving content!');  
+});
+</code></pre>
+
+<ul>
+<li>Atualize a página</li>
+</ul>
+<p>No painel de Application, você pode perceber que um Erro aparece. Parece assustador, mas clicar no botão <strong>details</strong> revela que é apenas o painel <strong>Application</strong> informando que seu Service Worker antigo foi atualizado forçosamente. Como essa era a intenção, isso é totalmente OK, mas pode servir como um alerta útil para que você não esqueça de desmarcar a caixa de seleção ao terminar de editar o arquivo <code>service-worker.js</code>.</p>
+<p><img alt="a039ca69d2179199.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/a039ca69d2179199.png" /></p>
+<h3 id="inspecione_o_armazenamento_em_cache">Inspecione o armazenamento em cache</h3>
+<p>Observe que o item de menu <strong>Cache Storage</strong> no painel <strong>Application</strong> agora tem um cursor, indicando que ele pode ser expandido.</p>
+<ul>
+<li>Clique para expandir o menu <strong>Cache Storage</strong>, em seguida, clique em <code>my-site-cache-v1</code></li>
+</ul>
+<p><img alt="af2b3981c63b1529.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/af2b3981c63b1529.png" /></p>
+<p>Aqui você pode ver todos os arquivos armazenados em cache pelo Service Worker. Se precisar remover um arquivo do cache, você pode clicar com o botão direito sobre ele e selecionar a opção <strong>delete</strong> no menu de contexto. Da mesma forma, você pode apagar todo o cache clicando com o botão direito em <code>my-site-cache-v1</code> e escolhendo excluir.</p>
+<p><img alt="5c8fb8f7948066e6.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/5c8fb8f7948066e6.png" /></p>
+<h3 id="limpe_o_slate">Limpe o slate</h3>
+<p>Como você pode ter notado, juntamente com <strong>Cache Storage</strong>, há uma série de outros itens de menu relacionados com os recursos armazenados, incluindo: Armazenamento Local, Armazenamento de Sessão, IndexedDB, Web SQL, Cookies, e Cache do Aplicativo ("AppCache"). Ter controle granular de cada um desses recursos em um único painel é extremamente útil. Mas você estivesse em um cenário em deseja excluir todos os recursos armazenados, seria muito tedioso ter que visitar cada item do menu e apagar seu conteúdo. Em vez disso, você pode usar a opção <strong>Clear storage</strong> para limpar o slate de uma só vez (observe que isso também cancelará o registro de quaisquer Service Workers).</p>
+<ul>
+<li>Selecione a opção de menu <strong>Clear storage</strong></li>
+<li>Clique no botão <strong>Clear site data</strong> para excluir todos os recursos armazenados</li>
+</ul>
+<p><img alt="59838a73a2ea2aaa.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/59838a73a2ea2aaa.png" /></p>
+<p>Se voltar e clicar em <code>my-site-cache-v1</code>, você verá que agora todos os arquivos armazenados foram excluídos.</p>
+<p><img alt="317d24238f05e69c.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/317d24238f05e69c.png" /></p>
+<p><strong>E a engrenagem?</strong></p>
+<p>Como o Service Worker pode fazer suas próprias solicitações de rede, ele pode ser útil para identificar o tráfego de rede que se originou a partir do próprio worker.</p>
+<ul>
+<li>Enquanto <code>my-site-cache-v1</code> ainda está vazio, alterne para o painel Network</li>
+<li>Atualize a página</li>
+</ul>
+<p>No painel Network, você deve ver um conjunto inicial de solicitação de arquivos como <code>main.css</code>, seguida de uma segunda rodada de solicitações, com o prefixo de um ícone de engrenagem, que parecem buscar os mesmos ativos.</p>
+<p><img alt="2ba393cf3d41e087.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/2ba393cf3d41e087.png" /></p>
+<p>O ícone de engrenagem significa que estas solicitações vieram do próprio Service Worker. Especificamente, estas são as solicitações que estão sendo feitas pelo gerenciador <code>install</code> do Service Worker para preencher o cache off-line.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Como simular diferentes condições de rede" duration="0">
+        <p>Um dos recursos arrasadores dos Service Workers é a sua capacidade de servir conteúdo armazenado em cache aos usuários, mesmo quando estão off-line. Para verificar se tudo funciona como planejado, vamos testar algumas das ferramentas de limitação de rede fornecida pelo Chrome.</p>
+<h3 id="fornecendo_solicitacoes_enquanto_esta_off-line">Fornecendo solicitações enquanto está off-line</h3>
+<p>Para servir de conteúdo off-line, você precisa adicionar um gerenciador <code>fetch</code> ao seu <code>service-worker.js</code></p>
+<ul>
+<li>Adicione o código a seguir ao <code>service-worker.js</code> logo após o <code>activate</code> gerenciador</li>
+</ul>
+<pre class="prettyprint"><code>self.addEventListener('fetch', function(event) {
+  event.respondWith(
+    caches.match(event.request)
+      .then(function(response) {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      }
+    )
+  );
+});
+</code></pre>
+
+<ul>
+<li>Alterne para o painel <strong>Application</strong> e verifique se <strong>Update on Reload</strong> ainda está marcada</li>
+<li>Atualize a página para instalar o novo Service Worker</li>
+<li>Desmarque <strong>Update on reload</strong></li>
+<li>Marque <strong>Offline</strong></li>
+</ul>
+<p>Seu painel <strong>Application</strong> deve ter a seguinte aparência agora:</p>
+<p><img alt="873b58278064b627.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/873b58278064b627.png" /></p>
+<p>Observe que o painel <strong>Network</strong> agora tem um sinal de aviso amarelo para indicar que você está off-line (e para lembrá-lo de desmarcar essa caixa de seleção se desejar continuar a desenvolver com a rede).</p>
+<p>Com seu gerenciador <code>fetch</code>, e seu aplicativo  definido para <strong>Offline</strong>, agora é a hora da verdade. Atualize a página e, se tudo correr bem, você deve continuar a ver o conteúdo do site, mesmo que nada venha da rede. Você pode alternar para o painel <strong>Network</strong> para verificar se todos os recursos estão sendo servidos a partir de armazenamento de cache. Observe que, na coluna <strong>Size</strong> é dito que esses recursos estão vindo do <code>(from Service Worker)</code>. Este é o sinal que nos diz que o Service Worker interceptou a solicitação, e serviu uma resposta do cache em vez de acessar a rede.</p>
+<p><img alt="a6f485875ca088db.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/a6f485875ca088db.png" /></p>
+<p>Você perceberá que há solicitações que falharam (como por um novo Service Worker ou <code>manifest.json</code>). Isso é totalmente bom e esperado.</p>
+<h3 id="testando_redes_lentas_ou_instaveis">Testando redes lentas ou instáveis</h3>
+<p>Como usamos nossos dispositivos móveis em uma infinidade de contextos diferentes, estamos em constante movimento entre vários estados de conectividade. Não apenas isso, mas há muitas partes do mundo onde as velocidades 3G e 2G são a norma. Para verificar se nosso aplicativo funciona bem para esses consumidores, devemos testar que ele é funcional mesmo em uma conexão mais lenta.</p>
+<p>Para começar, vamos simular como o aplicativo funciona em uma rede lenta quando o Service Worker não está em jogo.</p>
+<ul>
+<li>No painel <strong>Application</strong>, desmarque <strong>Offline</strong></li>
+<li>Marque <strong>Bypass for network</strong></li>
+</ul>
+<p><img alt="739dc5811e4aa937.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/739dc5811e4aa937.png" /></p>
+<p>A opção <strong>Bypass for network</strong> informará ao navegador para ignorar nosso service worker quando precisar fazer uma solicitação de rede. Isso significa que nada poderá vir do armazenamento em cache, será como se não houvesse um Service Worker instalado.</p>
+<ul>
+<li>Em seguida, alterne para o painel <strong>Network</strong></li>
+<li>Use a lista suspensa <strong>Network Throttle</strong> para definir a velocidade de rede para <code>Regular 2G</code></li>
+</ul>
+<p>A lista suspensa <strong>Network Throttle</strong> está localizada no canto superior direito do painel <strong>Network</strong>, junto à caixa de seleção <strong>Offline</strong> do próprio painel <strong>Network</strong>. Por padrão, ela é definida como <code>No throttling</code>.</p>
+<p><img alt="c59b54a853215598.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/c59b54a853215598.png" /></p>
+<ul>
+<li>Com a velocidade defina como <code>Regular 2G</code>, atualize a página</li>
+</ul>
+<p>Observe que os tempos de resposta aumentam muito! Agora cada ativo leva várias centenas de milissegundos para ser baixado.</p>
+<p><img alt="70e461338a0bb051.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/70e461338a0bb051.png" /></p>
+<p>Vejamos como isso fica diferente com nosso Service Worker de volta ao jogo.</p>
+<ul>
+<li>Com a rede ainda definida para <code>Regular 2G</code>, volte para a guia <strong>Application</strong></li>
+<li>Desmarque a caixa de seleção <strong>Bypass for network</strong></li>
+<li>Volte ao painel <strong>Network</strong></li>
+<li>Atualize a página</li>
+</ul>
+<p>Agora nossos tempos de resposta caem para rápidos poucos milissegundos por recurso. Para usuários em redes mais lentas, esta é uma diferença da noite para o dia!</p>
+<p><img alt="f0f6d3b0a1b1f18d.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/f0f6d3b0a1b1f18d.png" /></p>
+
+
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lembre-se, é apenas JavaScript" duration="0">
+        <p>Service Workers podem parecer mágica, mas na verdade eles são apenas arquivos JavaScript regulares. Isso significa que você pode usar as ferramentas existentes, como declarações <code>debugger</code> e pontos de interrupção para depurá-los.</p>
+<h3 id="trabalhe_com_o_depurador">Trabalhe com o depurador</h3>
+<p>Muitos desenvolvedores contam com o bom e velho <code>console.log()</code> quando têm um problema em seu aplicativo. Mas há uma ferramenta muito mais poderosa disponível na caixa de ferramentas: <code>debugger</code>.</p>
+<p>Adicionar esta linha ao seu código interromperá a execução e abrirá o painel <strong>Sources</strong> do DevTools. A partir daí você pode percorrer as funções, inspecionar objetos, e até mesmo usar o console para executar comandos contra o escopo atual. Isso pode ser especialmente útil para depurar um Service Worker instável.</p>
+<p>Para testar, vamos depurar nosso gerenciador <code>install</code>.</p>
+<ul>
+<li>Adicione uma declaração <code>debugger</code> ao início do seu gerenciador <code>install</code> em <code>service-worker.js</code></li>
+</ul>
+<pre class="prettyprint"><code>self.addEventListener('install', function(event) {
+  debugger;
+  // Perform install steps
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(function(cache) {
+        return cache.addAll(urlsToCache);
+      })
+  );  
+});
+</code></pre>
+
+<ul>
+<li>No painel <strong>Application</strong>, atualize a página</li>
+<li>Clique em <strong>skipWaiting</strong> para ativar o novo Service Worker</li>
+<li>Atualize a página novamente para permitir que o gerenciador <code>fetch</code> seja executado</li>
+</ul>
+<p>O aplicativo fará uma pausa na execução e alternará para o painel <strong>Sources</strong> onde a instrução <code>debugger</code> agora está em destaque no <code>service-worker.js</code>.</p>
+<p><img alt="d960b322c020d6cc.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/d960b322c020d6cc.png" /></p>
+<p>Há uma infinidade de ferramentas úteis disponíveis nesta visualização. Uma dessas ferramentas é o inspetor <strong>Scope</strong>, que nos permite ver o estado atual de objetos no escopo da função atual.</p>
+<ul>
+<li>Clique na lista suspensa <code>event: ExtendableEvent</code></li>
+</ul>
+<p><img alt="5116146f838a566.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/5116146f838a566.png" /></p>
+<p>Daí você pode descobrir todos os tipos de informações úteis sobre os atuais objetos no escopo. Por exemplo, olhando o campo <code>type</code>, é possível verificar se o objeto de evento atual é para o evento <code>install</code>.</p>
+<h3 id="como_usar_pontos_de_interrupcao_alternativamente">Como usar pontos de interrupção alternativamente</h3>
+<p>Se já está inspecionando seu código no painel <strong>Sources</strong>, você pode achar mais fácil configurar um ponto de interrupção, em vez de adicionar declarações <code>debugger</code> aos seus arquivos reais. Um ponto de interrupção serve a um propósito semelhante (congela a execução e permite que você inspecione o app), mas pode ser definido de dentro do próprio DevTools.</p>
+<p>Para definir um ponto de interrupção, você precisa clicar no número da linha onde deseja que a solicitação para interrompa a execução.</p>
+<ul>
+<li>No painel <strong>Sources</strong>, desça para a linha 25 do <code>service-worker.js</code> e clique no número da linha</li>
+</ul>
+<p><img alt="da7b5f76723ca525.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/da7b5f76723ca525.png" /></p>
+<p>Isso definirá um ponto de interrupção no início do gerenciador <code>fetch</code> para que você possa fiscalizar seu objeto de evento.</p>
+<ul>
+<li>Atualize a página</li>
+</ul>
+<p>Observe que, de modo semelhante a quando você usou a declaração <code>debugger</code>, a execução agora parou na linha com o ponto de interrupção. Isto significa que agora você pode inspecionar os objetos <code>FetchEvent</code> que passam por seu aplicativo e determinar quais recursos eles estavam solicitando.</p>
+<ul>
+<li>No inspetor <strong>Scope</strong>, expanda o objeto expanda o objeto <code>event</code></li>
+<li>Expanda o objeto <code>request</code></li>
+<li>Observe a propriedade <code>url</code></li>
+</ul>
+<p><img alt="f9b0c00237b4400d.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/f9b0c00237b4400d.png" /></p>
+<p>Você pode ver que este <code>FetchEvent</code> estava solicitando o recurso em <code>http://127.0.0.1:8887/</code>, que é nosso <code>index.html</code>. Como o aplicativo irá lidar com muitas solicitações <code>fetch</code>, você pode deixar o ponto de interrupção no lugar e continuar a execução. Isso permitirá que você inspecione cada <code>FetchEvent</code> conforme ele passa pelo aplicativo. Uma técnica muito útil para obter uma visão exata de todas as solicitações em seu aplicativo.</p>
+<ul>
+<li>Pressione o botão <strong>Resume</strong> para permitir que a execução de scripts continue</li>
+</ul>
+<p><img alt="ce7b5e8df4e8bc07.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/ce7b5e8df4e8bc07.png" /></p>
+<p>Após um momento, a execução será interrompida no mesmo ponto de interrupção. Verifique a propriedade <code>event.request.url</code> e observe que ela agora exibe <code>http://127.0.0.1:8887/styles/main.css</code>. Você pode continuar desta maneira para vê-la solicitar <code>smiley.svg</code>, <code>main.js</code> e finalmente o <code>manifest.json</code>.</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Testando notificações push" duration="0">
+       <p>Notificações push são uma parte importante de criar uma experiência envolvente. Como as notificações requerem coordenação entre um servidor de aplicativos, um serviço de mensagens (como o Google Cloud Messaging) e seu Service Worker, pode ser útil testar o Service Worker isoladamente primeiro para verificar se ele está configurado corretamente.</p>
+<h3 id="adicionar_suporte_a_push">Adicionar suporte a Push</h3>
+<p>Você pode ter notado um botão no centro da aplicativo pedindo ao usuário para <strong>Subscribe for Push Notifications</strong>. Este botão já está preparado para solicitar a permissão de Notificação push do usuário quando clicado.</p>
+<p><img alt="3e7f08f9d8c1fc5c.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/3e7f08f9d8c1fc5c.png" /></p>
+<p>O único passo restante é adicionar suporte para o evento <code>push</code>  no <code>service-worker.js</code>.</p>
+<ul>
+<li>Abra <code>service-worker.js</code> e adicione as linhas a seguir após o gerenciador <code>fetch</code></li>
+</ul>
+<pre class="prettyprint"><code>self.addEventListener('push', function(event) {  
+  var title = 'Yay a message.';  
+  var body = 'We have received a push message.';  
+  var icon = '/images/smiley.svg';  
+  var tag = 'simple-push-example-tag';
+  event.waitUntil(  
+    self.registration.showNotification(title, {  
+      body: body,  
+      icon: icon,  
+      tag: tag  
+    })  
+  );  
+});
+</code></pre>
+
+<p>Com o gerenciador configurado, é fácil simular um evento Push.</p>
+<ul>
+<li>Abra o painel de <strong>Application</strong></li>
+<li>Atualize a página, ao ver o novo Service Worker entrar na fase <code>waiting</code>, clique no botão <strong>skipWaiting</strong></li>
+<li>Clique no botão <strong>Subscribe to Push Notifications</strong></li>
+<li>Aceite a solicitação de permissão</li>
+</ul>
+<p><img alt="a8a8fa8d35b0667a.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/a8a8fa8d35b0667a.png" /></p>
+<ul>
+<li>Finalmente, clique no botão <strong>Push</strong>, ao lado de <strong>Update</strong> e <strong>Unregister</strong></li>
+</ul>
+<p><img alt="eacd4c5859f5f3ff.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/eacd4c5859f5f3ff.png" /></p>
+<p>Agora você deve ver uma notificação push aparecer no canto superior direito da tela, confirmando que o Service Worker está lidando com eventos <code>push</code> como esperado.</p>
+<p><img alt="b552ed129bc6cdf6.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/debugging-service-workers/img/b552ed129bc6cdf6.png" /></p>
+<p>Bom trabalho!</p>
+<p>Agora que tem algumas ferramentas de depuração em sua caixa de ferramentas, você deve estar bem equipado para resolver quaisquer problemas que surjam em seu projeto. A única coisa que falta é você se aventurar e construir o próximo incrível Progressive Web App!</p>
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+
+</body>
+
+</html>

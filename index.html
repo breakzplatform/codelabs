@@ -1,0 +1,2065 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!doctype html>
+<html lang="pt-br">
+  
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Codelabs · Joselito">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Codelabs · Joselito">
+  <meta name="application-name" content="Codelabs · Joselito">
+  <title>Codelabs · Joselito</title>
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+  <meta name="description" content="Aqui é o Joselito. Sou apaixonado pela web, organizador do GDG Recife e instrutor pela Tampa Works. Palestro sobre tecnologias web e gosto de F1, de aeroportos, de burritos e de piadas de baixa qualid">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Joselito">
+  <meta property="og:url" content="https://codelabs.joseli.to/index.html">
+  <meta property="og:site_name" content="Joselito">
+  <meta property="og:description" content="Aqui é o Joselito. Sou apaixonado pela web, organizador do GDG Recife e instrutor pela Tampa Works. Palestro sobre tecnologias web e gosto de F1, de aeroportos, de burritos e de piadas de baixa qualid">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Joselito">
+  <meta name="twitter:description" content="Aqui é o Joselito. Sou apaixonado pela web, organizador do GDG Recife e instrutor pela Tampa Works. Palestro sobre tecnologias web e gosto de F1, de aeroportos, de burritos e de piadas de baixa qualid">
+  <meta property="fb:app_id" content="1265807416816197">
+  <meta property="fb:pages" content="191984887960659">
+  <link rel="shortcut icon" href="https://joseli.to/images/favicon.ico">
+  <link rel="icon" type="image/png" href="https://joseli.to/images/icon-192x192.png" sizes="192x192">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://joseli.to/images/icon-512x512.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Joselito">
+  <meta name="apple-mobile-web-app-title" content="Joselito">
+  <meta name="theme-color" content="#0000ff">
+  <meta name="msapplication-navbutton-color" content="#0000ff">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#0000ff">
+  <meta name="msapplication-starturl" content="/">
+  <meta property="og:image" content="https://codelabs.joseli.to/images/share/fb.png">
+  <meta name="twitter:image:src" content="https://codelabs.joseli.to/images/share/twitter.png">
+  <link href="https://fonts.googleapis.com/css?family=Space+Mono" rel="stylesheet">
+
+
+  <style is="custom-style">
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /*******************************
+          Flex Layout
+*******************************/
+
+    .layout.horizontal,
+    .layout.horizontal-reverse,
+    .layout.vertical,
+    .layout.vertical-reverse {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
+    .layout.horizontal {
+      -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+      flex-direction: row;
+    }
+
+    .layout.vertical {
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+    }
+
+    .layout.wrap {
+      -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+    }
+
+    .flex,
+    .flex-1 {
+      -ms-flex: 1;
+      -webkit-flex: 1;
+      flex: 1;
+    }
+    /* alignment in cross axis */
+
+    .layout.start {
+      -webkit-align-items: flex-start;
+      -ms-flex-align: start;
+      align-items: flex-start;
+    }
+
+    .layout.center,
+    .layout.center-center {
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    .layout.end {
+      -webkit-align-items: flex-end;
+      -ms-flex-align: end;
+      align-items: flex-end;
+    }
+    /* alignment in main axis */
+
+    .layout.start-justified {
+      -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+    }
+
+    .layout.center-justified,
+    .layout.center-center {
+      -webkit-justify-content: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+    }
+
+    .layout.end-justified {
+      -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+      justify-content: flex-end;
+    }
+
+    .layout.around-justified {
+      -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+      justify-content: space-around;
+    }
+
+    .layout.justified {
+      -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+    }
+    /* self alignment */
+
+    .self-start {
+      -webkit-align-self: flex-start;
+      -ms-flex-item-align: start;
+      align-self: flex-start;
+    }
+
+    .self-center {
+      -webkit-align-self: center;
+      -ms-flex-item-align: center;
+      align-self: center;
+    }
+
+    .self-end {
+      -webkit-align-self: flex-end;
+      -ms-flex-item-align: end;
+      align-self: flex-end;
+    }
+
+    .self-stretch {
+      -webkit-align-self: stretch;
+      -ms-flex-item-align: stretch;
+      align-self: stretch;
+    }
+    /*******************************
+          Other Layout
+*******************************/
+
+    .block {
+      display: block;
+    }
+    /* IE 10 support for HTML5 hidden attr */
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .invisible {
+      visibility: hidden !important;
+    }
+
+    .relative {
+      position: relative;
+    }
+
+    .fit {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    body.fullbleed {
+      margin: 0;
+      height: 100vh;
+    }
+
+    .scroll {
+      -webkit-overflow-scrolling: touch;
+      overflow: auto;
+    }
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: #5c5c5c;
+    }
+
+    h1 {
+      -webkit-font-smoothing: antialiased;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 56px;
+      letter-spacing: -.026em;
+      line-height: 60px;
+      font-weight: 700;
+    }
+
+    h2 {
+      -webkit-font-smoothing: antialiased;
+      font-size: 45px;
+      letter-spacing: -.018em;
+      line-height: 48px;
+    }
+
+    h3 {
+      -webkit-font-smoothing: antialiased;
+      font-size: 34px;
+      letter-spacing: -.01em;
+      line-height: 40px;
+    }
+
+    h4 {
+      -webkit-font-smoothing: antialiased;
+      font-size: 24px;
+      letter-spacing: -.012em;
+      line-height: 32px;
+    }
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /* Colors */
+    /* Typography */
+    /* Breakpoints */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    body {
+      background: #ECEFF1;
+    }
+
+    body.view #banner {
+      padding-top: calc(56px + 24px);
+      padding-bottom: 24px;
+      position: relative;
+    }
+
+    b {
+      font-weight: 500;
+    }
+
+    a {
+      text-decoration: none;
+      color: currentcolor;
+    }
+
+    ul,
+    li {
+      list-style: none;
+      padding: 0;
+    }
+
+    [drawer] paper-toolbar {
+      background: url(/images/google-codelabs-select-event-bg.jpg) no-repeat 50% 50%;
+      background-size: cover;
+      background-color: #455a64;
+    }
+
+    [drawer] paper-item {
+      border-bottom: 1px solid #EEEEEE;
+    }
+
+    [drawer] paper-item a {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    paper-listbox {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    paper-item {
+      position: relative;
+      cursor: pointer;
+      font-weight: 300;
+    }
+
+    paper-item.iron-selected {
+      background-color: #ECEFF1;
+      color: #455a64;
+    }
+
+    .site-width {
+      margin: 0 auto;
+      width: 90vw;
+      max-width: 1024px;
+    }
+
+    #banner {
+      background-color: #fff;
+      padding: 0 40px 0 40px;
+      padding: 40px 0 48px 0;
+      box-shadow: 0px 3px 6px -3px #BDBDBD;
+    }
+
+    #banner[down] .banner-slider {
+      -webkit-transform: none;
+      transform: none;
+    }
+
+    #banner[down] .banner-title {
+      visibility: hidden;
+    }
+
+    #banner h2,
+    #banner h3 {
+      font-weight: 700;
+    }
+
+    #banner #logo {
+      height: 125px;
+      width: auto;
+      max-width: 100%;
+    }
+
+    #banner .banner-slider {
+      position: absolute;
+      top: 0;
+      max-width: 100%;
+      width: 100%;
+      background-color: #ECEFF1;
+      color: #546E7A;
+      padding: 8px 0;
+      -webkit-transform: translateY(-100%);
+      transform: translateY(-100%);
+      transition: -webkit-transform 400ms cubic-bezier(0, 0, 0.2, 1);
+      transition: transform 400ms cubic-bezier(0, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    #banner .banner-slider h3 {
+      font-size: 30px;
+    }
+
+    #banner .banner_arrows {
+      margin-left: 16px;
+    }
+
+    #banner .banner-title {
+      margin-bottom: 8px;
+    }
+
+    #banner .banner-description[data-filter-selected] iron-pages {
+      display: block;
+    }
+
+    #banner .banner-description[data-filter-selected] p.banner-info {
+      display: none;
+    }
+
+    #banner .banner-description .banner-meta {
+      padding: 0 32px 0 32px;
+    }
+
+    #banner .banner-description .banner-meta h3 {
+      margin-bottom: 8px;
+    }
+
+    #banner .banner-description iron-pages {
+      display: none;
+    }
+
+    #banner paper-button {
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      background-color: #607D8B;
+      padding: 8px 16px;
+      min-width: 150px;
+      color: #fff;
+      text-align: center;
+      border-radius: 0;
+      line-height: initial;
+    }
+
+    #banner paper-button.iron-selected {
+      background-color: #455a64;
+    }
+
+    #sortby {
+      padding: 24px 0;
+    }
+
+    #sortby paper-tabs {
+      color: #616161;
+      text-transform: uppercase;
+    }
+
+    #sortby paper-tab:hover {
+      background-color: #E0E0E0;
+      opacity: 1;
+    }
+
+    #categoryfilter {
+      background-color: #fff;
+      width: 200px;
+    }
+
+    #categoryfilter paper-listbox {
+      width: 200px;
+    }
+
+    @media (max-width: 767px) {
+      #banner {
+        padding: 16px 0;
+        line-height: 16px;
+      }
+      #banner paper-button {
+        display: inline-block;
+        margin: 16px 0 0 0;
+      }
+      #banner .filters-buttons iron-selector {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-justify-content: space-around;
+        -ms-flex-pack: distribute;
+        justify-content: space-around;
+      }
+      .banner-info {
+        line-height: 24px;
+        -webkit-align-self: flex-start;
+        -ms-flex-item-align: start;
+        align-self: flex-start;
+        width: 100%;
+      }
+      .banner-info paper-item {
+        border-bottom: 1px solid #EEEEEE;
+      }
+      .banner-description {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+      }
+      .banner-technologies {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        z-index: 1;
+      }
+      .banner-title {
+        font-size: 7vw;
+      }
+      .banner-meta {
+        display: none;
+      }
+      #logo {
+        margin-bottom: 16px;
+      }
+      #sortby {
+        -webkit-justify-content: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+      }
+      .filters {
+        width: 100%;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .filters {
+        max-width: calc(32% + 3px);
+      }
+      .filters-buttons iron-selector {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: flex-start;
+        -ms-flex-align: start;
+        align-items: flex-start;
+      }
+      #banner paper-button {
+        margin-bottom: 16px;
+      }
+      #banner .banner-title {
+        margin-bottom: 16px;
+      }
+      .banner-info {
+        margin-right: 32px;
+        line-height: 32px;
+      }
+      .banner-description {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+      }
+      .banner-description .banner-info {
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+      }
+      .banner-technologies,
+      .banner-events {
+        -webkit-columns: 200px;
+        -moz-columns: 200px;
+        columns: 200px;
+        padding: 0;
+        -webkit-overflow-scrolling: touch;
+        max-height: 128px;
+        transition: -webkit-transform 400ms cubic-bezier(0, 0, 0.2, 1);
+        transition: transform 400ms cubic-bezier(0, 0, 0.2, 1);
+      }
+      .banner-technologies paper-item,
+      .banner-events paper-item {
+        -moz-column-break-inside: avoid;
+        -webkit-column-break-inside: avoid;
+        column-break-inside: avoid;
+        min-height: 32px;
+        white-space: nowrap;
+      }
+      .banner-technologies {
+        -webkit-columns: 125px;
+        -moz-columns: 125px;
+        columns: 125px;
+      }
+    }
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /* Colors */
+    /* Typography */
+    /* Breakpoints */
+
+    #mainToolbar paper-icon-button[icon="menu"] {
+      -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+    }
+
+    #mainToolbar a {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+    }
+
+    #mainToolbar .logo-icon {
+      margin-right: 16px;
+      width: 30px;
+      height: 24px;
+    }
+
+    #mainToolbar .logo-devs {
+      width: 216px;
+      height: 36px;
+      margin-top: 5px;
+    }
+
+    #searchbar paper-input-container {
+      padding: 0;
+    }
+
+    #searchbar paper-input-container label,
+    #searchbar paper-input-container input {
+      color: #fff;
+    }
+
+    #searchbar paper-input-container label {
+      opacity: 0.5;
+    }
+
+    @media (min-width: 768px) {
+      #searchbar {
+        background-color: #546E7A;
+        transition: background-color 400ms cubic-bezier(0, 0, 0.2, 1);
+        width: 100%;
+      }
+      #searchbar:hover {
+        background-color: #78909C;
+      }
+      .logo-devs {
+        margin: 5px 32px 0 0;
+      }
+    }
+
+    @media (max-width: 767px) {
+      #searchbar paper-input-container {
+        display: none;
+      }
+      #mainToolbar {
+        height: 56px;
+      }
+      #mainToolbar paper-icon-button[icon="menu"] {
+        width: 40px;
+        margin-right: 8px;
+      }
+    }
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /* Colors */
+    /* Typography */
+    /* Breakpoints */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /* Common colors used in more than one category. */
+    /* Common icons used in more than one category. */
+    /* Mixins. */
+    /* TODO: Thats like 3 levels. Get rid of it and we can move to plain CSS. */
+    /* Actual CSS classes. */
+
+    .default-bg {
+      background-color: #BDBDBD;
+    }
+
+    .default-bg~.card-footer paper-button {
+      color: #BDBDBD;
+    }
+
+    .default-bg~.card-footer paper-button:hover,
+    .default-bg~.card-footer paper-button[focused] {
+      background: rgba(189, 189, 189, 0.1);
+    }
+
+    .about-bg {
+      background-color: blueviolet;
+    }
+
+    .about-bg~.card-footer paper-button {
+      color: #78909C;
+    }
+
+    .about-bg~.card-footer paper-button:hover,
+    .about-bg~.card-footer paper-button[focused] {
+      background: rgba(120, 144, 156, 0.1);
+    }
+
+    .about-icon {
+      background-image: url("img/about.svg");
+    }
+
+    .ads-bg {
+      background-color: #4caf50;
+    }
+
+    .ads-bg~.card-footer paper-button {
+      color: #4caf50;
+    }
+
+    .ads-bg~.card-footer paper-button:hover,
+    .ads-bg~.card-footer paper-button[focused] {
+      background: rgba(76, 175, 80, 0.1);
+    }
+
+    .ads-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/ads.png");
+    }
+
+    .analytics-bg {
+      background-color: #fb8c00;
+    }
+
+    .analytics-bg~.card-footer paper-button {
+      color: #fb8c00;
+    }
+
+    .analytics-bg~.card-footer paper-button:hover,
+    .analytics-bg~.card-footer paper-button[focused] {
+      background: rgba(251, 140, 0, 0.1);
+    }
+
+    .analytics-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/analytics.png");
+    }
+
+    .android-bg,
+    .android-auto-bg,
+    .android-tv-bg,
+    .android-wear-bg {
+      background-color: #a0bd3a;
+    }
+
+    .android-bg~.card-footer paper-button,
+    .android-auto-bg~.card-footer paper-button,
+    .android-tv-bg~.card-footer paper-button,
+    .android-wear-bg~.card-footer paper-button {
+      color: #a0bd3a;
+    }
+
+    .android-bg~.card-footer paper-button:hover,
+    .android-bg~.card-footer paper-button[focused],
+    .android-auto-bg~.card-footer paper-button:hover,
+    .android-auto-bg~.card-footer paper-button[focused],
+    .android-tv-bg~.card-footer paper-button:hover,
+    .android-tv-bg~.card-footer paper-button[focused],
+    .android-wear-bg~.card-footer paper-button:hover,
+    .android-wear-bg~.card-footer paper-button[focused] {
+      background: rgba(160, 189, 58, 0.1);
+    }
+
+    .android-icon,
+    .android-auto-icon,
+    .android-tv-icon,
+    .android-wear-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/android.svg");
+    }
+
+    .apps-bg {
+      background-color: #689f38;
+    }
+
+    .apps-bg~.card-footer paper-button {
+      color: #689f38;
+    }
+
+    .apps-bg~.card-footer paper-button:hover,
+    .apps-bg~.card-footer paper-button[focused] {
+      background: rgba(104, 159, 56, 0.1);
+    }
+
+    .apps-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/apps.png");
+    }
+
+    .assistant-bg {
+      background-color: #4285f4;
+    }
+
+    .assistant-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .assistant-bg~.card-footer paper-button:hover,
+    .assistant-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .assistant-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/assistant.png");
+    }
+
+    .sheets-bg {
+      background-color: #689f38;
+    }
+
+    .sheets-bg~.card-footer paper-button {
+      color: #689f38;
+    }
+
+    .sheets-bg~.card-footer paper-button:hover,
+    .sheets-bg~.card-footer paper-button[focused] {
+      background: rgba(104, 159, 56, 0.1);
+    }
+
+    .sheets-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/sheets.png");
+    }
+
+    .blockly-bg {
+      background-color: #5b80a5;
+    }
+
+    .blockly-bg~.card-footer paper-button {
+      color: #5b80a5;
+    }
+
+    .blockly-bg~.card-footer paper-button:hover,
+    .blockly-bg~.card-footer paper-button[focused] {
+      background: rgba(91, 128, 165, 0.1);
+    }
+
+    .blockly-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/blockly.png");
+    }
+
+    .brillo-bg {
+      background-color: #4285f4;
+    }
+
+    .brillo-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .brillo-bg~.card-footer paper-button:hover,
+    .brillo-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .brillo-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/brillo.png");
+    }
+
+    .cast-bg {
+      background-color: #4caf50;
+    }
+
+    .cast-bg~.card-footer paper-button {
+      color: #4caf50;
+    }
+
+    .cast-bg~.card-footer paper-button:hover,
+    .cast-bg~.card-footer paper-button[focused] {
+      background: rgba(76, 175, 80, 0.1);
+    }
+
+    .cast-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cast.png");
+    }
+
+    .chrome-bg {
+      background-color: #4285f4;
+    }
+
+    .chrome-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .chrome-bg~.card-footer paper-button:hover,
+    .chrome-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .chrome-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/chrome.svg");
+    }
+
+    .cloud-bg,
+    .cloud-about-bg,
+    .cloud-app-engine-bg,
+    .cloud-appengine-bg,
+    .cloud-cloud-tools-bg,
+    .cloud-compute-bg,
+    .cloud-data-bg,
+    .cloud-general-bg,
+    .cloud-machine-learning-bg,
+    .cloud-mobile-bg,
+    .cloud-monitoring-bg,
+    .cloud-networking-bg,
+    .cloud-others-bg,
+    .cloud-security-bg,
+    .cloud-web-bg {
+      background-color: #4285f4;
+    }
+
+    .cloud-bg~.card-footer paper-button,
+    .cloud-about-bg~.card-footer paper-button,
+    .cloud-app-engine-bg~.card-footer paper-button,
+    .cloud-appengine-bg~.card-footer paper-button,
+    .cloud-cloud-tools-bg~.card-footer paper-button,
+    .cloud-compute-bg~.card-footer paper-button,
+    .cloud-data-bg~.card-footer paper-button,
+    .cloud-general-bg~.card-footer paper-button,
+    .cloud-machine-learning-bg~.card-footer paper-button,
+    .cloud-mobile-bg~.card-footer paper-button,
+    .cloud-monitoring-bg~.card-footer paper-button,
+    .cloud-networking-bg~.card-footer paper-button,
+    .cloud-others-bg~.card-footer paper-button,
+    .cloud-security-bg~.card-footer paper-button,
+    .cloud-web-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .cloud-bg~.card-footer paper-button:hover,
+    .cloud-bg~.card-footer paper-button[focused],
+    .cloud-about-bg~.card-footer paper-button:hover,
+    .cloud-about-bg~.card-footer paper-button[focused],
+    .cloud-app-engine-bg~.card-footer paper-button:hover,
+    .cloud-app-engine-bg~.card-footer paper-button[focused],
+    .cloud-appengine-bg~.card-footer paper-button:hover,
+    .cloud-appengine-bg~.card-footer paper-button[focused],
+    .cloud-cloud-tools-bg~.card-footer paper-button:hover,
+    .cloud-cloud-tools-bg~.card-footer paper-button[focused],
+    .cloud-compute-bg~.card-footer paper-button:hover,
+    .cloud-compute-bg~.card-footer paper-button[focused],
+    .cloud-data-bg~.card-footer paper-button:hover,
+    .cloud-data-bg~.card-footer paper-button[focused],
+    .cloud-general-bg~.card-footer paper-button:hover,
+    .cloud-general-bg~.card-footer paper-button[focused],
+    .cloud-machine-learning-bg~.card-footer paper-button:hover,
+    .cloud-machine-learning-bg~.card-footer paper-button[focused],
+    .cloud-mobile-bg~.card-footer paper-button:hover,
+    .cloud-mobile-bg~.card-footer paper-button[focused],
+    .cloud-monitoring-bg~.card-footer paper-button:hover,
+    .cloud-monitoring-bg~.card-footer paper-button[focused],
+    .cloud-networking-bg~.card-footer paper-button:hover,
+    .cloud-networking-bg~.card-footer paper-button[focused],
+    .cloud-others-bg~.card-footer paper-button:hover,
+    .cloud-others-bg~.card-footer paper-button[focused],
+    .cloud-security-bg~.card-footer paper-button:hover,
+    .cloud-security-bg~.card-footer paper-button[focused],
+    .cloud-web-bg~.card-footer paper-button:hover,
+    .cloud-web-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .cloud-icon,
+    .cloud-about-icon,
+    .cloud-cloud-tools-icon,
+    .cloud-general-icon,
+    .cloud-others-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud.png");
+    }
+
+    .cloud-app-engine-icon,
+    .cloud-appengine-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/appengine.png");
+    }
+
+    .cloud-compute-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-compute.png");
+    }
+
+    .cloud-data-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-data.png");
+    }
+
+    .cloud-machine-learning-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-ml.png");
+    }
+
+    .cloud-mobile-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-mobile.png");
+    }
+
+    .cloud-monitoring-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-monitoring.png");
+    }
+
+    .cloud-networking-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-networking.png");
+    }
+
+    .cloud-security-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cloud-security.png");
+    }
+
+    .cloud-web-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/web.svg");
+    }
+
+    .firebase-bg {
+      background-color: #0288D1;
+    }
+
+    .firebase-bg~.card-footer paper-button {
+      color: #0288D1;
+    }
+
+    .firebase-bg~.card-footer paper-button:hover,
+    .firebase-bg~.card-footer paper-button[focused] {
+      background: rgba(2, 136, 209, 0.1);
+    }
+
+    .firebase-web-bg {
+      background-color: #4285f4;
+    }
+
+    .firebase-web-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .firebase-web-bg~.card-footer paper-button:hover,
+    .firebase-web-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .firebase-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/firebase.png");
+    }
+
+    .firebase-web-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/web.svg");
+    }
+
+    .games-bg,
+    .play-games-bg {
+      background-color: #F2531C;
+    }
+
+    .games-bg~.card-footer paper-button,
+    .play-games-bg~.card-footer paper-button {
+      color: #F2531C;
+    }
+
+    .games-bg~.card-footer paper-button:hover,
+    .games-bg~.card-footer paper-button[focused],
+    .play-games-bg~.card-footer paper-button:hover,
+    .play-games-bg~.card-footer paper-button[focused] {
+      background: rgba(242, 83, 28, 0.1);
+    }
+
+    .games-icon,
+    .play-games-icon,
+    .virtual-reality-games-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/cardboard.png");
+    }
+
+    .geo-bg {
+      background-color: #4285f4;
+    }
+
+    .geo-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .geo-bg~.card-footer paper-button:hover,
+    .geo-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .geo-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/geo.png");
+    }
+
+    .search-bg {
+      background-color: #4285f4;
+    }
+
+    .search-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .search-bg~.card-footer paper-button:hover,
+    .search-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .search-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/google_g.svg");
+    }
+
+    .vr-bg,
+    .virtual-reality-bg {
+      background-color: #FF8A65;
+    }
+
+    .vr-bg~.card-footer paper-button,
+    .virtual-reality-bg~.card-footer paper-button {
+      color: #FF8A65;
+    }
+
+    .vr-bg~.card-footer paper-button:hover,
+    .vr-bg~.card-footer paper-button[focused],
+    .virtual-reality-bg~.card-footer paper-button:hover,
+    .virtual-reality-bg~.card-footer paper-button[focused] {
+      background: rgba(255, 138, 101, 0.1);
+    }
+
+    .vr-icon,
+    .virtual-reality-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/vr.svg");
+    }
+
+    .iot-bg {
+      background-color: #757575;
+    }
+
+    .iot-bg~.card-footer paper-button {
+      color: #757575;
+    }
+
+    .iot-bg~.card-footer paper-button:hover,
+    .iot-bg~.card-footer paper-button[focused] {
+      background: rgba(117, 117, 117, 0.1);
+    }
+
+    .iot-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/iot.svg");
+    }
+
+    .nest-bg {
+      background-color: #00AFD8;
+    }
+
+    .nest-bg~.card-footer paper-button {
+      color: #00AFD8;
+    }
+
+    .nest-bg~.card-footer paper-button:hover,
+    .nest-bg~.card-footer paper-button[focused] {
+      background: rgba(0, 175, 216, 0.1);
+    }
+
+    .nest-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/nest.png");
+    }
+
+    .openthread-bg {
+      background-color: #00aed9;
+    }
+
+    .openthread-bg~.card-footer paper-button {
+      color: #00aed9;
+    }
+
+    .openthread-bg~.card-footer paper-button:hover,
+    .openthread-bg~.card-footer paper-button[focused] {
+      background: rgba(0, 174, 217, 0.1);
+    }
+
+    .openthread-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/openthread.png");
+    }
+
+    .tensorflow-bg {
+      background-color: #ef6c00;
+    }
+
+    .tensorflow-bg~.card-footer paper-button {
+      color: #ef6c00;
+    }
+
+    .tensorflow-bg~.card-footer paper-button:hover,
+    .tensorflow-bg~.card-footer paper-button[focused] {
+      background: rgba(239, 108, 0, 0.1);
+    }
+
+    .tensorflow-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/tensorflow.png");
+    }
+
+    .unity-bg {
+      background-color: #757575;
+    }
+
+    .unity-bg~.card-footer paper-button {
+      color: #757575;
+    }
+
+    .unity-bg~.card-footer paper-button:hover,
+    .unity-bg~.card-footer paper-button[focused] {
+      background: rgba(117, 117, 117, 0.1);
+    }
+
+    .unity-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/unity.png");
+    }
+
+    .weave-bg {
+      background-color: #0f9d58;
+    }
+
+    .weave-bg~.card-footer paper-button {
+      color: #0f9d58;
+    }
+
+    .weave-bg~.card-footer paper-button:hover,
+    .weave-bg~.card-footer paper-button[focused] {
+      background: rgba(15, 157, 88, 0.1);
+    }
+
+    .weave-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/weave.svg");
+    }
+
+    .web-bg {
+      background-color: #4285f4;
+    }
+
+    .web-bg~.card-footer paper-button {
+      color: #4285f4;
+    }
+
+    .web-bg~.card-footer paper-button:hover,
+    .web-bg~.card-footer paper-button[focused] {
+      background: rgba(66, 133, 244, 0.1);
+    }
+
+    .web-icon {
+      background-image: url("https://codelabs.developers.google.com/images/icons/web.svg");
+    }
+
+    #cards {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+      -webkit-justify-content: flex-start;
+      -ms-flex-pack: start;
+      justify-content: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .codelab-card {
+      position: relative;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-flex: 1 0 330px;
+      -ms-flex: 1 0 330px;
+      flex: 1 0 330px;
+      margin: 0 16px 16px 0;
+      background-color: #fff;
+      max-width: 330px;
+    }
+
+    .codelab-card:nth-of-type(3n) {
+      margin-right: 0;
+    }
+
+    .codelab-card img {
+      margin-right: 4px;
+    }
+
+    .codelab-card .card-header {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .codelab-card .card-header .category-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #fff;
+      background-size: 100%;
+      background-position: 50% 50%;
+      background-repeat: no-repeat;
+    }
+
+
+    .codelab-card .card-header .category-icon.about-jose {
+      width: 70px;
+      background-color: blueviolet;
+    }
+
+    .codelab-card .card-duration {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      mix-blend-mode: overlay;
+      color: #212121;
+    }
+
+    .codelab-card .card-author,
+    .codelab-card .card-updated {
+      font-size: 12px;
+      color: #BDBDBD;
+      line-height: 16px;
+      text-align: right;
+    }
+
+    .codelab-card .description {
+      padding: 16px 32px;
+      -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+      flex: 1 0 auto;
+    }
+
+    .card-footer {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      border-top: 1px solid #E0E0E0;
+      padding: 8px 16px;
+    }
+
+    .card-footer paper-button {
+      -webkit-font-smoothing: antialiased;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+
+    .card-pin {
+      position: absolute;
+      left: 7px;
+      bottom: 14px;
+      width: 15px;
+      height: 20px;
+      background-repeat: no-repeat;
+      background-image: url('data:image/svg+xml;utf8,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M0 0h18v18H0"/><path fill="#888" d="M13 4V2H5v2h1v5l-1.5 1.5V12H8v4l1 1 1-1v-4h3.5v-1.5L12 9V4"/></g></svg>');
+    }
+    /* ***** Responsive ***** */
+
+    @media (max-width: 767px) {
+      #cards {
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+      }
+      .codelab-card {
+        margin: 0 0 16px;
+        min-width: 330px;
+        max-width: 100%;
+        width: 100%;
+        -webkit-flex: 1 0 200px;
+        -ms-flex: 1 0 200px;
+        flex: 1 0 200px;
+      }
+      .codelab-card .card-header {
+        border-radius: 0;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+      }
+      .codelab-card .card-header .category-icon {
+        margin: 0;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .codelab-card {
+        min-height: 250px;
+      }
+    }
+
+    @media (min-width: 767px) and (max-width: 1136px) {
+      .codelab-card {
+        -webkit-flex: 0 0 32%;
+        -ms-flex: 0 0 32%;
+        flex: 0 0 32%;
+        margin: 0 2% 2% 0;
+        min-height: 200px;
+      }
+    }
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /* Colors */
+    /* Typography */
+    /* Breakpoints */
+
+    #footer {
+      background-color: #424242;
+      font-size: 13px;
+      padding: 40px 0;
+    }
+
+    #footer ul,
+    #footer li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #footer a {
+      color: #9e9e9e;
+    }
+
+    #footer .footer-wrapper {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
+    #footer .link-list {
+      border-top: 1px solid #616161;
+      -webkit-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      margin-right: 32px;
+    }
+
+    #footer .link-list:last-child {
+      margin-right: 0;
+      margin-bottom: 0;
+    }
+
+    #footer .link-list label {
+      display: block;
+      color: #fff;
+      margin: 8px 0 16px;
+    }
+
+    .footerbar {
+      background-color: #616161;
+      color: #fff;
+      font-size: 13px;
+      padding: 10px 0;
+    }
+
+    .footerbar a {
+      color: currentcolor;
+    }
+
+    .footerbar paper-dropdown-menu {
+      background-color: #fff;
+      padding: 0 4px 0 8px;
+      width: 100px;
+    }
+
+    .footerbar paper-item {
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 767px) {
+      #footer {
+        padding: 24px 0;
+      }
+      #footer .footer-wrapper {
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+      }
+      #footer .link-list {
+        margin: 0 0 24px 0;
+      }
+    }
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+    /* Colors */
+    /* Typography */
+    /* Breakpoints */
+    /**
+ * Copyright 2015 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+    body.loading paper-toast {
+      visibility: hidden;
+    }
+
+    body.loading paper-drawer-panel [drawer] {
+      display: none;
+    }
+
+    body.loading #sortby paper-tabs {
+      height: 48px;
+      opacity: 0;
+      display: block;
+    }
+
+    body.loading .filters-buttons {
+      pointer-events: none;
+    }
+
+    body.loading .card-footer {
+      height: 50px;
+    }
+    /*
+body.loading .card-footer paper-button {
+  opacity: 0;
+}
+*/
+
+    body.loading .footerbar {
+      height: 60px;
+    }
+
+    body.loading paper-dropdown-menu {
+      visibility: hidden;
+      height: 40px;
+    }
+
+    body.loading .banner-technologies,
+    body.loading .banner-events {
+      display: none;
+    }
+
+    body.loading #searchbar paper-input-container {
+      opacity: 0;
+    }
+
+    #sortby paper-tabs,
+    .card-footer paper-button,
+    #searchbar paper-input-container {
+      transition: opacity 400ms cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    @media (max-width: 767px) {
+      #mainToolbar paper-icon-button[icon="menu"] {
+        width: 40px;
+      }
+    }
+
+    body {
+      font-family: 'Space Mono', Inconsolata, Consolas, monospace;
+      line-height: 1.618
+    }
+
+     :root {
+      --paper-tabs-selection-bar-color: currentcolor;
+      --paper-input-container-underline: {
+        display: none;
+      }
+      ;
+      --paper-input-container-underline-focus: {
+        display: none;
+      }
+      ;
+    }
+
+    #mainToolbar paper-icon-button {
+      --paper-icon-button-ink-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .loading paper-drawer-panel {
+      --paper-drawer-panel-scrim: {
+        display: none;
+      }
+      ;
+    }
+
+    #langselect {
+      --paper-input-container-input: {
+        text-transform: uppercase;
+        font-size: inherit;
+      }
+      ;
+    }
+
+    #categoryfilter {
+      --paper-input-container: {
+        padding: 8px;
+      }
+      ;
+    }
+
+    .logo-jose-icon {
+      height: 50px;
+    }
+
+
+    @keyframes backgroundAnimation {
+      0% {
+        background-position: 0 99%;
+      }
+      50% {
+        background-position: 100% 2%;
+      }
+      100% {
+        background-position: 0 99%;
+      }
+    }
+
+    #mainToolbar {
+      padding: 1.2rem 2rem 1.2rem 1.2rem;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      color: #fff;
+      justify-content: space-between;
+
+
+      background: linear-gradient(270deg, #00f, #8a2be2);
+      background-size: 400% 400%;
+      animation: backgroundAnimation 60s ease infinite;
+    }
+
+    .main {
+      margin-top: 2rem;
+    }
+
+    .sectionTitle {
+      margin: 0 auto 1rem;
+    }
+
+    .sectionTitle h3 {
+      font-weight: 500;
+    }
+
+    nav a {
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .warning-note {
+      font-size: 0.75rem;
+      color: #999;
+    }
+
+    .share-box {
+      margin: 1rem auto 0;
+      text-transform: lowercase;
+    }
+
+    .share-box h3 {
+      font-size: 1rem;
+    }
+
+    .addthis_inline_share_toolbox {
+      height: 37px;
+    }
+  </style>
+</head>
+
+<body id="app" is="body-bind" class="fullbleed">
+
+  <span id="browser-sync-binding"></span>
+
+  <!-- Needed 2 queries due to https://github.com/PolymerElements/iron-media-query/issues/15 -->
+  <iron-media-query query="(max-width:768px)" hidden query-matches="{{isPhoneSize}}"></iron-media-query>
+  <iron-media-query query="(min-width: 768px)" hidden query-matches="{{isDesktopSize}}"></iron-media-query>
+
+  <paper-drawer-panel id="drawer" force-narrow>
+
+    <paper-header-panel id="main" mode="waterfall" main>
+
+      <div id="mainToolbar" class="paper-header">
+        <div class="layout horizontal">
+          <a href="/" title="Google Developers">
+            <img src="https://joseli.to/images/logo.svg" class="logo-jose-icon">
+          </a>
+        </div>
+        <nav>
+          <a href="https://joseli.to/?ref=codelabs" target="_blank">[Voltar para Joseli.to]</a>
+        </nav>
+      </div>
+
+
+
+      <header id="banner">
+        <div class="site-width">
+          <h2 class="banner-title">Bem-vindo aos Joselabs!</h2>
+          <div class="banner-description">
+            <p class="banner-info">
+              Este espaço é dedicado para Codelabs de tecnologias web, num formato onde você pode aprender no seu próprio ritmo, com atividades
+              guiadas e muito hands-on.
+            </p>
+          </div>
+        </div>
+        <div class="site-width share-box">
+          <h3>Compartilhe os Codelabs:</h3>
+          <div class="addthis_inline_share_toolbox"></div>
+        </div>
+      </header>
+
+      <main class="main">
+
+        <div class="site-width sectionTitle">
+          <h3>Progressive Web Apps</h3>
+        </div>
+
+        <div class="site-width layout horizontal center justified">
+          <card-sorter id="cards" class="site-width">
+            <a href="/" class="codelab-card category-about">
+              <div class="card-header about-bg">
+                <div id="icon" class="category-icon about-icon about-jose"></div>
+              </div>
+              <div class="description">Sobre os Codelabs</div>
+              <div class="card-footer">
+                <paper-button>Leia</paper-button>
+                <div>
+                  <div class="card-updated">Atualizado em 2017-08-05</div>
+                </div>
+              </div>
+            </a>
+
+            <a href="primeiro-pwa.html" class="codelab-card category-web">
+              <div class="card-header web-bg">
+                <div id="icon" class="category-icon web-icon"></div>
+              </div>
+              <div class="description">Seu Primeiro Progressive Web App</div>
+              <div class="card-footer">
+                <paper-button>Começar</paper-button>
+                <div>
+                  <div class="card-updated">Atualizado em 2017-04-16</div>
+                </div>
+              </div>
+            </a>
+
+            <a href="transforme-pwa.html" class="codelab-card category-web">
+              <div class="card-header web-bg">
+                <div id="icon" class="category-icon web-icon"></div>
+              </div>
+              <div class="description">🎉 Transforme seu site em um Progressive Web App 🐲</div>
+              <div class="card-footer">
+                <paper-button>Começar</paper-button>
+                <div>
+                  <div class="card-updated">Atualizado em 2017-05-15</div>
+                </div>
+              </div>
+            </a>
+
+
+            <a href="offline.html" class="codelab-card category-web">
+              <div class="card-header web-bg">
+                <div id="icon" class="category-icon web-icon"></div>
+              </div>
+              <div class="description">Adicionar um Service Worker e Offline ao seu App da Web</div>
+              <div class="card-footer">
+                <paper-button>Começar</paper-button>
+                <div>
+                  <div class="card-updated">Atualizado em 2017-06-07</div>
+                </div>
+              </div>
+            </a>
+
+
+            <a href="sw-debug.html" class="codelab-card category-web">
+              <div class="card-header web-bg">
+                <div id="icon" class="category-icon web-icon"></div>
+              </div>
+              <div class="description">Depurando Service Workers</div>
+              <div class="card-footer">
+                <paper-button>Começar</paper-button>
+                <div>
+                  <div class="card-updated">Atualizado em 2017-06-08</div>
+                </div>
+              </div>
+            </a>
+
+          </card-sorter>
+
+      </main>
+
+
+      <div class="site-width warning-note">
+        Este website se trata, em sua maioria, de uma compilação de traduções e de textos em formato de Codelab, sento muitos deles
+        são retirados do <a href="https://codelabs.developers.google.com/">Google Codelabs</a>. Todos os direitos
+        são reservados aos respectivos donos. Este website não possui nenhuma ligação com o Google.
+      </div>
+
+      <!--footer id="footer">
+        <div class="footer-wrapper site-width">
+          <div class="link-list">
+            <label>Connect</label>
+            <ul>
+              <li><a href="https://googledevelopers.blogspot.com/">Blog</a></li>
+              <li><a href="https://www.facebook.com/pages/Google-Developers/967415219957038">Facebook</a></li>
+              <li><a href="https://plus.google.com/+GoogleDevelopers/posts">Google+</a></li>
+              <li><a href="https://medium.com/google-developers">Medium</a></li>
+              <li><a href="https://twitter.com/googledevs">Twitter</a></li>
+              <li><a href="https://www.youtube.com/user/GoogleDevelopers">YouTube</a></li>
+            </ul>
+          </div>
+          <div class="link-list">
+            <label>Programs</label>
+            <ul>
+              <li><a href="https://www.womentechmakers.com/">Women Techmakers</a></li>
+              <li><a href="https://developers.google.com/agency/">Agency Program</a></li>
+              <li><a href="https://developers.google.com/groups/">Google Developer Groups</a></li>
+              <li><a href="https://developers.google.com/experts/">Google Developer Experts</a></li>
+              <li><a href="https://developers.google.com/startups/">Startup Launchpad</a></li>
+            </ul>
+          </div>
+          <div class="link-list">
+            <label>Developer Consoles</label>
+             <ul>
+              <li><a href="https://console.developers.google.com/">Google API Console</a></li>
+              <li><a href="https://console.cloud.google.com">Google Cloud Developer Console</a></li>
+              <li><a href="https://play.google.com/apps/publish/">Google Play Developer Console</a></li>
+              <li><a href="https://firebase.google.com/console/">Firebase Console</a></li>
+              <li><a href="https://cast.google.com/publish/">Cast SDK Developer Console</a></li>
+              <li><a href="https://chrome.google.com/webstore/developer/dashboard">Chrome Web Store Dashboard</a></li>
+            </ul>
+          </div>
+          <div class="link-list">
+            <label>Explore</label>
+             <ul>
+              <li><a href="https://developers.google.com/android/">Android</a></li>
+              <li><a href="https://developers.google.com/ios/">iOS</a></li>
+              <li><a href="https://developers.google.com/web/">Web</a></li>
+              <li><a href="https://developers.google.com/games/">Games</a></li>
+              <li><a href="https://developers.google.com/products/">All Products</a></li>
+              <li><a href="https://www.google.com/about/careers/">Careers</a></li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+
+      <div class="footerbar">
+        <div class="site-width layout horizontal center justified">
+          <span>
+            <a href="https://developers.google.com/site-terms/">Terms</a>
+            &nbsp; | &nbsp;
+            <a href="https://www.google.com/intl/en/privacy/" class="gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Footer Privacy Link">Privacy</a>
+          </span>
+        </div>
+      </div-->
+
+    </paper-header-panel>
+  </paper-drawer-panel>
+
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-597e4d87e9001310"></script>
+
+</body>
+
+</html>
