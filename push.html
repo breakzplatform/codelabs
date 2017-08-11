@@ -1,0 +1,506 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Adicionando Notificações Push no seu Web App</title>
+  <script src="https://codelabs.developers.google.com/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="import" href="https://codelabs.developers.google.com/elements/codelab.html">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <style>
+    body {
+      font-family: "Roboto", sans-serif;
+    }
+  </style>
+
+</head>
+
+<body unresolved class="fullbleed">
+  <google-codelab title="Adicionando Notificações Push no seu Web App"
+                  environment="web"
+                  feedback-link="https://github.com/googlechrome/push-notifications/issues">
+    
+      <google-codelab-step label="Visão Geral" duration="0">
+
+<p>Mensagens push fornecem uma maneira simples e eficaz para voltar a interagir com seus usuários e neste codelab você vai aprender como adicionar notificações push ao seu app da Web.</p>
+<h3 id="o_que_voce_aprendera">O que você aprenderá</h3>
+<ul>
+<li>Como se inscrever e cancelar a inscrição de um usuário para mensagens push</li>
+<li>Como lidar com a entrada de mensagens push</li>
+<li>Como exibir uma notificação</li>
+<li>Como responder a cliques de notificação</li>
+</ul>
+<h3 id="o_que_sera_necessario">O que será necessário</h3>
+<ul>
+<li>Chrome 52 ou superior</li>
+<li><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=pt-br">Web Server for Chrome</a>, seu servidor de Web preferido</li>
+<li>Um editor de texto</li>
+<li>Conhecimento básico de HTML, CSS, JavaScript e Chrome DevTools</li>
+<li>O exemplo de código, consulte Obter Configuração</li>
+</ul>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Obter Configuração" duration="0">
+        <<h3 id="faca_download_do_exemplo_de_codigo">Faça download do exemplo de código</h3>
+<p>Você  pode obter o exemplo de código para este código fazendo download do zip aqui:</p>
+<p><a href="https://github.com/googlechrome/push-notifications/archive/master.zip">Link</a></p>
+<p>ou clonando este repositório git:</p>
+<pre class="prettyprint notranslate" translate="no"><code>git clone https://github.com/GoogleChrome/push-notifications.git
+</code></pre>
+<p>Se você baixou a fonte como um zip, descompactá-lo deve fornecer uma pasta raiz <code>push-notifications-master</code>.</p>
+<h3 id="instale_e_verifique_o_servidor_de_web">Instale e verifique o servidor de Web</h3>
+<p>Embora você seja livre para usar seu próprio servidor de Web, este codelab é projetado para funcionar bem com o Chrome Web Server. Se ainda não tem esse aplicativo instalado, você pode instalá-lo pela Chrome Web Store.</p>
+<p><a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=pt-br">Link</a></p>
+<p>Após instalar o aplicativo Web Server for Chrome, clique no atalho Apps na barra de favoritos: </p>
+<p><img alt="a80b29d5e878df22.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/a80b29d5e878df22.png?hl=pt-br" /></p>
+<p>Na janela seguinte, clique no ícone do Web Server: </p>
+<p><img alt="dc07bbc9fcfe7c5b.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/dc07bbc9fcfe7c5b.png?hl=pt-br" /></p>
+<p>Você verá esta caixa de diálogo, que lhe permite configurar seu servidor de Web local:</p>
+<p><img alt="433870360ad308d4.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/433870360ad308d4.png?hl=pt-br" /></p>
+<p>Clique no botão <strong>choose folder</strong>, e selecione a pasta do app. Isto permitirá servir o seu trabalho em andamento pelo URL em destaque na caixa de diálogo do servidor de Web (na seção <strong>Web Server URL(s)</strong>).</p>
+<p>Em Options, marque a caixa ao lado de "Automatically show index.html", como mostrado abaixo:</p>
+<p><img alt="39b4e0371e9703e6.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/39b4e0371e9703e6.png?hl=pt-br" /></p>
+<p>Em seguida, interrompa e reinicie o servidor, deslizando o botão de alternância marcado como "Web Server: STARTED" para a esquerda e de volta para a direita.</p>
+<p><img alt="daefd30e8a290df5.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/daefd30e8a290df5.png?hl=pt-br" /></p>
+<p>Agora, visite seu site no seu navegador da Web (clicando no URL Web Server em destaque) e você deve ver uma página com a seguinte aparência:</p>
+<p><img alt="4525ec369fc2ae47.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/4525ec369fc2ae47.png?hl=pt-br" /></p>
+<h3 id="atualize_sempre_o_service_worker">Atualize sempre o service worker</h3>
+<p>Durante o desenvolvimento é útil garantir que seu service worker esteja sempre atualizado e tenha as últimas alterações.</p>
+<p>Para configurar isso no Chrome, abra DevTools (clique com o botão direito do mouse &gt; Inspect) e vá para o painel <strong>Application</strong>, clique na guia <strong>Service Workers</strong> e marque a caixa de seleção <strong>Update on Reload</strong>. Quando esta caixa de seleção está ativada, o service worker é forçosamente atualizado toda vez que a página recarrega.</p>
+<p><img alt="6b698d7c7bbf1bc0.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/6b698d7c7bbf1bc0.png?hl=pt-br" /></p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Registrar um Service Worker" duration="0">
+       <p>No seu diretório <code>app</code>, perceba que você tem um arquivo vazio chamado <code>sw.js</code>. Este arquivo será o seu service worker. Por enquanto ele pode ficar vazio, adicionaremos código a ele mais tarde.</p>
+<p>Primeiro, precisamos registrar este arquivo como nosso Service Worker.</p>
+<p>Nossa página <code>app/index.html</code> carrega <code>scripts/main.js</code>, e é neste arquivo de JavaScript que registraremos nosso service worker.</p>
+<p>Adicione o código a seguir ao <code>scripts/main.js</code>:</p>
+<pre class="prettyprint"><code>if ('serviceWorker' in navigator &amp;&amp; 'PushManager' in window) {
+  console.log('Service Worker and Push is supported');
+
+  navigator.serviceWorker.register('sw.js')
+  .then(function(swReg) {
+    console.log('Service Worker is registered', swReg);
+
+    swRegistration = swReg;
+  })
+  .catch(function(error) {
+    console.error('Service Worker Error', error);
+  });
+} else {
+  console.warn('Push messaging is not supported');
+  pushButton.textContent = 'Push Not Supported';
+}
+</code></pre>
+
+<p>Esse código verifica se service workers e mensagens push são suportados pelo navegador atual e, caso sejam, ele registra nosso arquivo <code>sw.js</code>.</p>
+<h4 id="experimente">Experimente</h4>
+<p>Verifique suas alterações, abrindo o URL <strong>127.0.0.1:8887</strong> no navegador.</p>
+<p>Abra Chrome DevTools para verificar o console quanto a <code>Service Worker is registered</code>, assim:</p>
+<p><img alt="de3ceca91043d278.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/de3ceca91043d278.png?hl=pt-br" /></p>
+<h3 id="obtenha_as_chaves_do_servidor_do_aplicativo">Obtenha as Chaves do Servidor do Aplicativo</h3>
+<p>Para trabalhar com este codelab, você precisa gerar algumas chaves de servidor de aplicativo, o que podemos fazer com este site associado: <a href="https://web-push-codelab.appspot.com/?hl=pt-br">https://web-push-codelab.appspot.com/</a></p>
+<p>Aqui você pode gerar um par de chaves pública e privada.</p>
+<p><img alt="a1304b99e7b981dd.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/a1304b99e7b981dd.png?hl=pt-br" /></p>
+<p>Copie a chave pública para <code>scripts/main.js</code> substituindo o valor <code>&lt;Your Public Key&gt;</code>:</p>
+<pre class="prettyprint"><code>const applicationServerPublicKey = '&lt;Your Public Key&gt;';
+</code></pre>
+
+<p>Observação: Nunca se deve colocar sua chave privada no aplicativo da Web!</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Inicializar Estado" duration="0">
+       <p>No momento, o botão do aplicativo da Web está desativado e não pode ser clicado. Isso ocorre porque é uma boa prática desativar o botão de push por padrão e ativá-lo quando se sabe que push é suportado e pode-se saber se o usuário está inscrito ou não.</p>
+<p>Vamos criar duas funções em <code>scripts/main.js</code>, uma chamada <code>initialiseUI</code>, que vai verificar se o usuário está inscrito, e uma chamada <code>updateBtn</code>, que habilitará nosso botão e mudará o texto dependendo se do status de inscrição do usuário.</p>
+<p>Nossa função <code>initialiseUI</code> deve ter a seguinte aparência:</p>
+<pre class="prettyprint"><code>function initialiseUI() {
+  // Set the initial subscription value
+  swRegistration.pushManager.getSubscription()
+  .then(function(subscription) {
+    isSubscribed = !(subscription === null);
+
+    if (isSubscribed) {
+      console.log('User IS subscribed.');
+    } else {
+      console.log('User is NOT subscribed.');
+    }
+
+    updateBtn();
+  });
+}
+</code></pre>
+
+<p>Nosso novo método usa o <code>swRegistration</code> da etapa anterior e chama <code>getSubscription()</code> em seu <code>pushManager</code>. <code>getSubscription()</code> é um método que retorna uma promessa que se resolve com a inscrição atual, se houver; caso contrário, ele retorna <code>null</code>. Com isso, podemos verificar se o usuário já está inscrito ou não, definir um estado e depois chamar <code>updateBtn()</code>, para que o botão possa ser ativado com algum texto útil.</p>
+<p>Adicione o código a seguir para implementar a função <code>updateBtn()</code>.</p>
+<pre class="prettyprint"><code>function updateBtn() {
+  if (isSubscribed) {
+    pushButton.textContent = 'Disable Push Messaging';
+  } else {
+    pushButton.textContent = 'Enable Push Messaging';
+  }
+
+  pushButton.disabled = false;
+}
+</code></pre>
+
+<p>Esta função simplesmente muda o texto, dependendo do status de inscrição do usuário e, em seguida, ativa o botão.</p>
+<p>A última coisa a fazer é chamar <code>initialiseUI()</code> quando nosso service worker está registrado.</p>
+<pre class="prettyprint"><code>navigator.serviceWorker.register('sw.js')
+.then(function(swReg) {
+  console.log('Service Worker is registered', swReg);
+
+  swRegistration = swReg;
+  initialiseUI();
+})
+</code></pre>
+
+<h4 id="experimente_1">Experimente</h4>
+<p>Abra seu app da Web, você deve ver que o botão 'Enable Push Messaging' agora está ativado (é possível clicar nele) e deve ver ‘User NOT subscribed.' no console. </p>
+<p><img alt="15f6375617c11974.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/15f6375617c11974.png?hl=pt-br" /></p>
+<p>Com o progresso ao longo do codelab, você deve ver o texto do botão mudar quando o usuário está inscrito/não inscrito.</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Inscreva o usuário" duration="0">
+        <p>No momento, nosso botão 'Enable Push Messaging' não faz quase nada, então vamos consertar isso. </p>
+<p>Adicione um ouvinte de clique ao nosso botão na função <code>initialiseUI()</code>, assim:</p>
+<pre class="prettyprint"><code>function initialiseUI() {
+  pushButton.addEventListener('click', function() {
+    pushButton.disabled = true;
+    if (isSubscribed) {
+      // TODO: Unsubscribe user
+    } else {
+      subscribeUser();
+    }
+  });
+
+  // Set the initial subscription value
+  swRegistration.pushManager.getSubscription()
+  .then(function(subscription) {
+    isSubscribed = !(subscription === null);
+
+    updateSubscriptionOnServer(subscription);
+
+    if (isSubscribed) {
+      console.log('User IS subscribed.');
+    } else {
+      console.log('User is NOT subscribed.');
+    }
+
+    updateBtn();
+  });
+}
+</code></pre>
+
+<p>Quando o usuário clica no botão de push, primeiro desativamos o botão, apenas para certificar que o usuário não possa clicar nele uma segunda vez enquanto o estamos inscrevendo para push, pois isso pode levar algum tempo.</p>
+<p>Em seguida, chamamos <code>subscribeUser()</code> quando sabemos que o usuário não está inscrito atualmente, portanto, copie e cole o código a seguir no <code>scripts/main.js</code>.</p>
+<pre class="prettyprint"><code>function subscribeUser() {
+  const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+  swRegistration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: applicationServerKey
+  })
+  .then(function(subscription) {
+    console.log('User is subscribed:', subscription);
+
+    updateSubscriptionOnServer(subscription);
+
+    isSubscribed = true;
+
+    updateBtn();
+  })
+  .catch(function(err) {
+    console.log('Failed to subscribe the user: ', err);
+    updateBtn();
+  });
+}
+</code></pre>
+
+<p>Vamos analisar o que este código está fazendo e como está inscrevendo o usuário para mensagens push.</p>
+<p>Primeiro, tomamos a chave pública do servidor do aplicativo, que é codificada com base em URL 64 seguro, e a convertemos em um <code>UInt8Array</code>, pois esta é a interação esperada da chamada de inscrição. Já lhe demos a função <code>urlB64ToUint8Array</code> no topo de <code>scripts/main.js</code>.</p>
+<p>Depois de converter o valor, chamamos o método <code>subscribe()</code> no <code>pushManager</code> do nosso service worker, passando a chave pública do nosso servidor de aplicativo e o valor <code>userVisibleOnly: true</code>.</p>
+<pre class="prettyprint"><code>const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+swRegistration.pushManager.subscribe({
+  userVisibleOnly: true,
+  applicationServerKey: applicationServerKey
+})
+</code></pre>
+
+<p>O parâmetro <code>userVisibleOnly</code> é, basicamente, uma admissão de que você vai mostrar uma notificação cada vez que um push for enviado. No momento desta redação, este valor é obrigatório e deve ser verdadeiro.</p>
+<p>Chamar <code>subscribe()</code>  retorna uma promessa que se resolverá após as seguintes etapas:</p>
+<ol>
+<li>O usuário concedeu permissão para exibir notificações.</li>
+<li>O navegador enviou uma solicitação de rede a um serviço de push para obter os detalhes para gerar um PushSubscription.</li>
+</ol>
+<p>A promessa <code>subscribe()</code> se resolve com um <code>PushSubscription</code> se essas etapas tiverem sido bem sucedidas. Se o usuário não conceder permissão, ou se houver qualquer problema para inscrever o usuário, a promessa será rejeitada com um erro. Isso nos dá a seguinte cadeia de promessa em nosso codelab:</p>
+<pre class="prettyprint"><code>swRegistration.pushManager.subscribe({
+  userVisibleOnly: true,
+  applicationServerKey: applicationServerKey
+})
+.then(function(subscription) {
+  console.log('User is subscribed:', subscription);
+
+  updateSubscriptionOnServer(subscription);
+
+  isSubscribed = true;
+
+  updateBtn();
+
+})
+.catch(function(err) {
+  console.log('Failed to subscribe the user: ', err);
+  updateBtn();
+});
+</code></pre>
+
+<p>Com isso, obtemos uma assinatura e tratamos o usuário como inscrito, ou pegamos o erro e o imprimimos para o console. Em ambos os cenários, chamamos <code>updateBtn()</code> para garantir que o botão seja reativado e tenha o texto apropriado.</p>
+<p>O método <code>updateSubscriptionOnServer</code> é um método onde, em um aplicativo real enviaríamos nossa inscrição para um back-end; porém, para o nosso codelab, vamos imprimir a inscrição em nossa IU, que nos será útil mais tarde. Adicione este método a <code>scripts/main.js</code>:</p>
+<pre class="prettyprint"><code>function updateSubscriptionOnServer(subscription) {
+  // TODO: Send subscription to application server
+
+  const subscriptionJson = document.querySelector('.js-subscription-json');
+  const subscriptionDetails =
+    document.querySelector('.js-subscription-details');
+
+  if (subscription) {
+    subscriptionJson.textContent = JSON.stringify(subscription);
+    subscriptionDetails.classList.remove('is-invisible');
+  } else {
+    subscriptionDetails.classList.add('is-invisible');
+  }
+}
+</code></pre>
+
+<h4 id="experimente_2">Experimente</h4>
+<p>Se voltar ao seu app da Web e tentar clicar no botão, você deve ver uma solicitação de permissão como esta:</p>
+<p><img alt="227cea0abe03a5b4.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/227cea0abe03a5b4.png?hl=pt-br" /></p>
+<p>Se conceder a permissão, você deve ver o console imprimir <code>User is subscribed:</code> com o <code>PushSubscription</code>, o texto do botão mudará para 'Disable Push Messaging' e poderá ver a inscrição como JSON na parte inferior da página.</p>
+<p><img alt="8fe2b1b110f87b34.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/8fe2b1b110f87b34.png?hl=pt-br" /></p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Permissão de Gerenciamento Negada" duration="0">
+        <p>Uma coisa que ainda não tratamos é o que acontece se o usuário bloquear a solicitação de permissão. Isso precisa de uma consideração exclusiva, porque se o usuário bloquear a permissão, nosso app da Web não será capaz de voltar a mostrar a solicitação de permissão e não poderá inscrever o usuário, portanto, precisamos desativar pelo menos um botão push para que o usuário sabe que ele não pode ser usado.</p>
+<p>O lugar óbvio para gerenciarmos este cenário é na função <code>updateBtn()</code>. Tudo que precisamos fazer é verificar o valor <code>Notification.permission</code>, assim:</p>
+<pre class="prettyprint"><code>function updateBtn() {
+  if (Notification.permission === 'denied') {
+    pushButton.textContent = 'Push Messaging Blocked.';
+    pushButton.disabled = true;
+    updateSubscriptionOnServer(null);
+    return;
+  }
+
+  if (isSubscribed) {
+    pushButton.textContent = 'Disable Push Messaging';
+  } else {
+    pushButton.textContent = 'Enable Push Messaging';
+  }
+
+  pushButton.disabled = false;
+}
+</code></pre>
+
+<p>Sabemos que, se a permissão for <code>denied</code>, o usuário não pode ser inscrito e não há nada mais que possamos fazer, de modo que desabilitar o botão definitivamente é a melhor abordagem.</p>
+<h4 id="experimente_3">Experimente</h4>
+<p>Como já concedemos permissão para nosso app da Web na etapa anterior, precisamos clicar no <strong>i</strong> em um círculo na barra de URL e alterar a permissão de notificações para <em>Use global default (Ask)</em>.</p>
+<p><img alt="8775071d7fd66432.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/8775071d7fd66432.png?hl=pt-br" /></p>
+<p>Após alterar essa configuração, atualize a página e clique no botão <em>Enable Push Messaging</em> e, desta vez, selecione <em>Block</em> na caixa de diálogo de permissão. O texto do botão agora será <em>Push Messaging Blocked</em> e estará desativado.</p>
+<p><img alt="2b5314607196f4e1.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/2b5314607196f4e1.png?hl=pt-br" /></p>
+<p>Com esta alteração, agora podemos inscrever o usuário e estamos cuidando dos possíveis cenários de permissão.</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gerenciar um Evento Push" duration="0">
+       <p>Antes de falar sobre como enviar uma mensagem push do seu back-end, precisamos considerar o que realmente acontecerá quando um usuário inscrito receber uma mensagem push.</p>
+<p>Quando disparamos uma mensagem push, o navegador recebe a mensagem push, descobre para qual service worker o push se destina antes de ativar esse service worker e despachar um evento push. Precisamos ouvir esse evento e mostrar uma notificação, como resultado.</p>
+<p>Adicione o seguinte código ao seu arquivo <code>sw.js</code>:</p>
+<pre class="prettyprint"><code>self.addEventListener('push', function(event) {
+  console.log('[Service Worker] Push Received.');
+  console.log(`[Service Worker] Push had this data: &quot;${event.data.text()}&quot;`);
+
+  const title = 'Push Codelab';
+  const options = {
+    body: 'Yay it works.',
+    icon: 'images/icon.png',
+    badge: 'images/badge.png'
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+</code></pre>
+
+<p>Vamos passar por este código. Estamos ouvindo por eventos push em nosso service worker, adicionando um ouvinte de eventos ao nosso service worker, que é este pedaço de código:</p>
+<pre class="prettyprint"><code>self.addEventListener('push', ...... );
+</code></pre>
+
+<p>A menos que você já tenha usado Web Workers antes, <code>self</code> é provavelmente novo. <code>self</code> está fazendo referência ao service worker em si, por isso estamos adicionando um ouvinte de eventos ao nosso service worker.</p>
+<p>Quando uma mensagem push é recebida, nosso ouvinte de eventos será acionado, e criamos uma notificação chamando <code>showNotification()</code> em nosso registro. <code>showNotification()</code> espera um <code>title</code> e podemos receber um objeto <code>options</code>. Aqui, definiremos um corpo, ícone e indicador para a mensagem nas opções (o indicador é usado somente em Android no momento desta redação).</p>
+<pre class="prettyprint"><code>const title = 'Push Codelab';
+const options = {
+  body: 'Yay it works.',
+  icon: 'images/icon.png',
+  badge: 'images/badge.png'
+};
+self.registration.showNotification(title, options);
+</code></pre>
+
+<p>A última coisa a tratar no nosso evento push é <code>event.waitUntil()</code>. Este método requer uma promessa e o navegador manterá seu service worker funcionando até que a promessa passado tenha se resolvido.</p>
+<p>Para tornar o código acima de um pouco mais fácil de entender, podemos reescrevê-lo assim:</p>
+<pre class="prettyprint"><code>const notificationPromise = self.registration.showNotification(title, options);
+event.waitUntil(notificationPromise);
+</code></pre>
+
+<p>Agora que já analisamos o evento push, vamos testar um evento push.</p>
+<h4 id="experimente_4">Experimente</h4>
+<p>Com nosso evento push no service worker, podemos testar o que acontece quando uma mensagem é recebida desencadeando um evento push falso com o uso de DevTools.</p>
+<p>Em seu app da Web, inscreva-se para mensagens push, certificando-se de que você tenha <em>User IS subscribed</em> em seu console; em seguida, vá para o painel <em>Application</em> do DevTools e, na guia <em>Service Workers</em>, clique no link <em>Push</em> sob seu service worker.</p>
+<p><img alt="2b089bdf10a8a945.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/2b089bdf10a8a945.png?hl=pt-br" /></p>
+<p>Depois de clicar nele, você deve ver uma notificação como esta:</p>
+<p><img alt="eee7f9133a97c1c4.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/eee7f9133a97c1c4.png?hl=pt-br" /></p>
+<p>Observação: Se este passo não funcionar, tente cancelar o registro do seu service worker, através do link <em>Unregister</em> no painel DevTools Application, aguarde o service worker ser parado e, em seguida, atualize a página.</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Clique em notificação" duration="0">
+        <p>Se clicar em uma dessas notificações, você perceberá que nada acontece. Podemos gerenciar cliques em notificação ouvindo por eventos <code>notificationclick</code> no seu service worker.</p>
+<p>Comece adicionando um ouvinte <code>notificationclick</code> em <code>sw.js</code> assim:</p>
+<pre class="prettyprint"><code>self.addEventListener('notificationclick', function(event) {
+  console.log('[Service Worker] Notification click Received.');
+
+  event.notification.close();
+
+  event.waitUntil(
+    clients.openWindow('https://developers.google.com/web/')
+  );
+});
+</code></pre>
+
+<p>Quando o usuário clica na notificação, o ouvinte de evento <code>notificationclick</code> será chamado.</p>
+<p>Neste codelab, primeiro fechamos a notificação que foi clicada com:</p>
+<pre class="prettyprint"><code>event.notification.close();
+</code></pre>
+
+<p>Em seguida, abrimos uma nova janela/guia carregando o url <a href="https://developers.google.com/web/?hl=pt-br">developers.google.com/web/</a>, fique à vontade para alterá-lo :)</p>
+<pre class="prettyprint"><code>clients.openWindow('https://developers.google.com/web/')
+</code></pre>
+
+<p>Estamos chamando <code>event.waitUntil()</code> novamente para garantir que o navegador não encerre nosso service worker antes que nossa nova janela tenha sido exibida.</p>
+<h4 id="experimente_5">Experimente</h4>
+<p>Tente acionar uma mensagem automática no DevTools e clicar novamente na notificação. Agora você verá a notificação fechar e abrir uma nova guia.</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Envio de mensagens push" duration="0">
+        <p>Vimos que nosso app da Web é capaz de mostrar uma notificação usando DevTools e aprendemos como fechar a notificação de um clique, o próximo passo é enviar uma mensagem push real.</p>
+<p>Normalmente, o processo para isso seria o envio de uma inscrição a partir de uma página da Web para um back-end e o back-end acionaria uma mensagem push, fazendo uma chamada de API para o ponto final na inscrição.</p>
+<p>Isso está fora do escopo deste codelab, mas você pode usar o site associado (<a href="https://web-push-codelab.appspot.com/?hl=pt-br">https://web-push-codelab.appspot.com/</a>) neste codelab para acionar uma mensagem push real. Copie e cole a inscrição na parte inferior da sua página:</p>
+<p><img alt="cf0e71f76cb79cc4.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/cf0e71f76cb79cc4.png?hl=pt-br" /></p>
+<p>Em seguida, cole-a na área de texto <em>Subscription to Send To</em> do site do associado:</p>
+<p><img alt="a12fbfdc08233592.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/a12fbfdc08233592.png?hl=pt-br" /></p>
+<p>Em seguida, sob <em>Text to Send</em> você pode adicionar qualquer string que deseja enviar com a mensagem push e, finalmente, clicar no botão <em>Send Push Message</em>.</p>
+<p><img alt="2973c2b818ca9324.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/2973c2b818ca9324.png?hl=pt-br" /></p>
+<p>Em seguida, você deve receber uma mensagem push e o texto que incluiu será impresso para o console.</p>
+<p><img alt="75b1fedbfb7e0b99.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/75b1fedbfb7e0b99.png?hl=pt-br" /></p>
+<p>Isso deve te dar uma chance para testar o envio e recebimento de dados e a manipulação de notificações resultante.</p>
+<p>O aplicativo associado é, na verdade, apenas um servidor de nó que está usando a <a href="https://github.com/web-push-libs/web-push">biblioteca web-push</a> para enviar mensagens. Vale a pena conferir as <a href="https://github.com/web-push-libs/">bibl-web-push org no GitHub</a> para ver quais bibliotecas estão disponíveis para enviar mensagens push para você (isso gerencia diversos pequenos pormenores para acionar mensagens push).</p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cancelar a inscrição do usuário" duration="0">
+       <p>A única coisa que está faltando é a capacidade de cancelar a inscrição para push do usuário. Para fazer isso, precisamos chamar <code>unsubscribe()</code> em uma <code>PushSubscription</code>.</p>
+<p>De volta ao nosso arquivo <code>scripts/main.js</code>, altere o ouvinte de clique <code>pushButton</code> em <code>initialiseUI()</code> para o seguinte:</p>
+<pre class="prettyprint"><code>pushButton.addEventListener('click', function() {
+  pushButton.disabled = true;
+  if (isSubscribed) {
+    unsubscribeUser();
+  } else {
+    subscribeUser();
+  }
+});
+</code></pre>
+
+<p>Observe que agora vamos chamar uma nova função <code>unsubscribeUser()</code>. Neste método, obteremos a inscrição atual e chamamos cancelar inscrição nela. Adicione o código a seguir ao <code>scripts/main.js</code>:</p>
+<pre class="prettyprint"><code>function unsubscribeUser() {
+  swRegistration.pushManager.getSubscription()
+  .then(function(subscription) {
+    if (subscription) {
+      return subscription.unsubscribe();
+    }
+  })
+  .catch(function(error) {
+    console.log('Error unsubscribing', error);
+  })
+  .then(function() {
+    updateSubscriptionOnServer(null);
+
+    console.log('User is unsubscribed.');
+    isSubscribed = false;
+
+    updateBtn();
+  });
+}
+</code></pre>
+
+<p>Vamos analisar esta função.</p>
+<p>Primeiro obtemos a inscrição atual, chamando <code>getSubscription()</code>:</p>
+<pre class="prettyprint"><code>swRegistration.pushManager.getSubscription()
+</code></pre>
+
+<p>Isso retorna uma promessa que resolve com uma <code>PushSubscription</code>, se existir, caso contrário, retorna <code>null</code>. Se houver uma inscrição, chamamos <code>unsubscribe()</code> o que invalida a <code>PushSubscription</code>.</p>
+<pre class="prettyprint"><code>swRegistration.pushManager.getSubscription()
+.then(function(subscription) {
+  if (subscription) {
+    // TODO: Tell application server to delete subscription
+    return subscription.unsubscribe();
+  }
+})
+.catch(function(error) {
+  console.log('Error unsubscribing', error);
+})
+</code></pre>
+
+<p>Chamar <code>unsubscribe()</code> retorna uma promessa, pois isso pode levar algum tempo para ser concluído, então retornamos a promessa para que o próximo <code>then()</code> na cadeia aguarde a finalização de <code>unsubscribe()</code>. Também adicionamos um gerenciador de captura para o caso da chamada <code>unsubscribe()</code> resultar em um erro. Depois disso, podemos atualizar nossa IU.</p>
+<pre class="prettyprint"><code>.then(function() {
+  updateSubscriptionOnServer(null);
+
+  console.log('User is unsubscribed.');
+  isSubscribed = false;
+
+  updateBtn();
+})
+</code></pre>
+
+<h4 id="experimente_6">Experimente</h4>
+<p>Você deve conseguir pressionar o botão <em>Enable Push Messaging</em>  /  <em>Disable Push Messaging</em> em seu app da Web e os registros mostrarão o usuário sendo inscrito e tendo sua inscrição cancelada.</p>
+<p><img alt="33dd89c437c17c97.png" src="https://developers.google.com/web/fundamentals/getting-started/codelabs/push-notifications/img/33dd89c437c17c97.png?hl=pt-br" /></p>
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Concluído" duration="0">
+       <p>Parabéns pela conclusão deste codelab!</p>
+<p>Este codelab mostrou como começar a usar a adição push ao seu app da Web. Se deseja saber mais sobre o que notificações de web podem fazer, <a href="https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/?hl=pt-br">confira estes docs</a>. </p>
+<p>Se procura implantar push em seu site, você pode estar interessado em adicionar suporte para navegadores compatíveis mais antigos/não-padrão que utilizam GCM, <a href="https://web-push-book.gauntface.com/chapter-06/01-non-standards-browsers/">saiba mais aqui</a>.</p>
+<h3 id="leitura_adicional">Leitura adicional</h3>
+<ul>
+<li><a href="https://developers.google.com/web/fundamentals/engage-and-retain/push-notifications/?hl=pt-br">Notificação push na Web</a> documentação sobre <strong>Fundamentos</strong> da Web</li>
+<li><a href="https://github.com/web-push-libs/">Bibliotecas push na Web</a> - Bibliotecas Push na Web, incluindo Node.js, PHP, Java e Python.</li>
+</ul>
+<h4 id="postagens_do_blog_relevantes">Postagens do blog relevantes</h4>
+<ul>
+<li><a href="https://developers.google.com/web/updates/2016/03/web-push-encryption?hl=pt-br">Criptografia de carga útil de push na Web</a></li>
+<li><a href="https://developers.google.com/web/updates/2016/07/web-push-interop-wins?hl=pt-br">Chaves de Servidor de Aplicativo e push na Web</a></li>
+<li><a href="https://developers.google.com/web/updates/2016/01/notification-actions?hl=pt-br">Ações de notificação</a></li>
+<li><a href="https://developers.google.com/web/updates/2016/03/notifications?hl=pt-br">Ícones, eventos fechados, preferências de renotificação e timestamps</a></li>
+</ul>
+
+      </google-codelab-step>
+    
+  </google-codelab>
+</body>
+
+</html>
